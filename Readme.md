@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Ilona Khafizova](https://up.htmlacademy.ru/javascript/18/user/838037).
-* Наставник: `Неизвестно`.
+* Наставник: `Иван Чернобук`.
 
 ---
 
