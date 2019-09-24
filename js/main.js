@@ -1,3 +1,12 @@
+var COMMENTS_NUMBER = 2;
+var IMAGES_NUMBER = 25;
+var AVATAR_MAX = 6;
+var LIKES_MIN = 15;
+var LIKES_MAX = 200;
+
+var imagesTemplate = document.querySelector('#picture');
+var imagesList = document.querySelector('.pictures');
+
 var comments = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -16,38 +25,71 @@ var namesArray = [
   'Андрей',
   'Максим'
 ];
+
 var getRandomFromArray = function (array) {
+
   return array[Math.floor(Math.random() * array.length)];
 };
 
 var getRandomArbitrary = function (min, max) {
+
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
 var generateComments = function () {
   var commentsArray = [];
-  for (var i = 0; i < 2; i++) {
+
+  for (var i = 0; i < COMMENTS_NUMBER; i++) {
     commentsArray.push({
-      avatar: 'img/avatar-' + getRandomArbitrary(1, 6) + '.svg',
+      avatar: 'img/avatar-' + getRandomArbitrary(1, AVATAR_MAX) + '.svg',
       message: getRandomFromArray(comments),
       name: getRandomFromArray(namesArray)
     })
   }
+
   return commentsArray;
 };
 
-
 var generateArray = function (j) {
   var dataArray = [];
+
   for (var i = 0; i < j; i++) {
     dataArray.push({
-      url: 'photos/' + getRandomArbitrary(1, 25) + '.jpg',
+      url: 'photos/' + getRandomArbitrary(1, j) + '.jpg',
       description: '',
-      likes: getRandomArbitrary(15, 200),
+      likes: getRandomArbitrary(LIKES_MIN, LIKES_MAX),
       comments: generateComments()
     });
   }
+
   return dataArray;
 }
 
-var imagesArray = generateArray(25);
+var imagesArray = generateArray(IMAGES_NUMBER);
+
+var renderImage = function (image) {
+  var ImageElement = imagesTemplate.cloneNode(true);
+  debugger
+  console.log(ImageElement, image)
+  // ImageElement.querySelector('src').textContent = wizard.url;
+  ImageElement.querySelector('.picture__likes').textContent = image.likes;
+  ImageElement.querySelector('.picture__comments').textContent = image.comments;
+
+
+  return ImageElement;
+};
+
+var renderImagesList = function (array) {
+  var fragment = document.createDocumentFragment();
+
+  for (var i = 0; i < array.length; i++) {
+    fragment.appendChild(renderImage(array[i]));
+  }
+
+  return fragment;
+}
+
+
+var fragment = renderImagesList(imagesArray);
+// debugger
+imagesList.appendChild(fragment);
