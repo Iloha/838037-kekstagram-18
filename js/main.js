@@ -4,7 +4,9 @@ var AVATAR_MAX = 6;
 var LIKES_MIN = 15;
 var LIKES_MAX = 200;
 
-var imagesTemplate = document.querySelector('#picture');
+var imagesTemplate = document.querySelector('#picture')
+  .content
+  .querySelector('.picture');
 var imagesList = document.querySelector('.pictures');
 
 var comments = [
@@ -65,16 +67,12 @@ var generateArray = function (j) {
   return dataArray;
 }
 
-var imagesArray = generateArray(IMAGES_NUMBER);
-
 var renderImage = function (image) {
   var ImageElement = imagesTemplate.cloneNode(true);
-  debugger
-  console.log(ImageElement, image)
-  // ImageElement.querySelector('src').textContent = wizard.url;
-  ImageElement.querySelector('.picture__likes').textContent = image.likes;
-  ImageElement.querySelector('.picture__comments').textContent = image.comments;
 
+  // ImageElement.querySelector('src').textContent = image.url;
+  ImageElement.querySelector('.picture__likes').textContent = image.likes;
+  ImageElement.querySelector('.picture__comments').textContent = image.comments.length;
 
   return ImageElement;
 };
@@ -89,7 +87,6 @@ var renderImagesList = function (array) {
   return fragment;
 }
 
-
+var imagesArray = generateArray(IMAGES_NUMBER);
 var fragment = renderImagesList(imagesArray);
-// debugger
 imagesList.appendChild(fragment);
