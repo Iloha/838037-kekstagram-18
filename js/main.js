@@ -29,12 +29,10 @@ var namesArray = [
 ];
 
 var getRandomFromArray = function (array) {
-
   return array[Math.floor(Math.random() * array.length)];
 };
 
 var getRandomArbitrary = function (min, max) {
-
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
@@ -70,7 +68,7 @@ var generateArray = function (j) {
 var renderImage = function (image) {
   var ImageElement = imagesTemplate.cloneNode(true);
 
-  // ImageElement.querySelector('src').textContent = image.url;
+  ImageElement.querySelector('.picture__img').setAttribute('src', image.url);
   ImageElement.querySelector('.picture__likes').textContent = image.likes;
   ImageElement.querySelector('.picture__comments').textContent = image.comments.length;
 
