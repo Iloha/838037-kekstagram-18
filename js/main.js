@@ -94,6 +94,37 @@ imagesList.appendChild(fragment);
 var uploadFile = document.querySelector('#upload-file');
 var editForm = document.querySelector('.img-upload__overlay');
 var closeEditForm = editForm.querySelector('#upload-cancel')
+var sliderPin = editForm.querySelector('.effect-level__pin');
+var slider = editForm.querySelector('.effect-level__line');
+var tagsList = editForm.querySelector('input[name="hashtags"]').value;
+
+var isValid = function () {
+  var tagListData = tagsList.split(' ');
+  var valid = true;
+  if (tagListData.length > 5) {
+    return valid = false;
+  }
+  for (var i = 0; i < tagListData.length; i++) {
+    var tag = tagListData[i];
+    if (tag.charAt(0) !== "#" ) {
+      return valid = false;
+    }
+    if (tag.length === 1) {
+      return valid = false;
+    }
+    if (tag.length > 20) {
+      return valid = false;
+    }
+  };
+  return valid;
+}
+
+isValid();
+
+// хэш-теги разделяются пробелами;
+// один и тот же хэш-тег не может быть использован дважды;
+// теги нечувствительны к регистру: #ХэшТег и #хэштег считаются одним и тем же тегом;
+
 
 var showEditForm = function () {
   editForm.classList.remove('hidden');
@@ -103,29 +134,44 @@ var showEditForm = function () {
 
 var closeForm = function () {
   editForm.classList.add('hidden');
+  uploadFile.value = '';
   document.removeEventListener('change', onUploadFileChange);
   document.removeEventListener('click', onCloseForm);
   document.removeEventListener('keydown', onPressEscClose);
-}
+};
+
+var changeEffectLevel = function () {
+
+};
 
 var onUploadFileChange = function () {
   showEditForm();
-}
+};
 
 var onCloseForm = function () {
   closeForm();
-
-  //remove all handlers
-}
+};
 
 var onPressEscClose = function(evt) {
   if (evt.keyCode === ESC_CODE) {
     closeForm();
   }
-}
+};
+
+var onMouseUpEffectLevel = function (evt) {
+  var width = slider.offsetWidth;
+  var left = sliderPin.offsetLeft;
+  var p = left * 100/width;
+
+  changeEffectLevel();
+};
 
 uploadFile.addEventListener('change', onUploadFileChange);
+sliderPin.addEventListener('mouseup', onMouseUpEffectLevel);
 
 
-// На клик по крестику вешаю обработчик на закрывтие формы, и esc
-//который вызывает функцию closeForm, в которой также сбрасывается значение поля выбора файла #upload-file
+//.effect-level__pin mouseup, изменять уровень насыщенности фильтра для изображения.
+//рассчитать положение пина слайдера относительно всего блока и воспользоваться пропорцией
+// при переключении сбросить насыщенность
+//какой ивент будет при переключении?
+// если фокус находится в поле ввода хэш-тега, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
