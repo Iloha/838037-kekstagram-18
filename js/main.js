@@ -90,7 +90,7 @@ var imagesArray = generateArray(IMAGES_NUMBER);
 var fragment = renderImagesList(imagesArray);
 imagesList.appendChild(fragment);
 
-
+//module4-task2
 var uploadFile = document.querySelector('#upload-file');
 var editFormPopup = document.querySelector('.img-upload__overlay');
 var closeEditFormPopup = editFormPopup.querySelector('#upload-cancel');
@@ -102,45 +102,41 @@ var effectPreviewFields = editFormPopup.querySelectorAll('input[name="effect"]')
 var effectValueField = editFormPopup.querySelector('.effect-level__value');
 
 var editForm = document.querySelector('.img-upload__form');
-var tagsList = editFormPopup.querySelector('input[name="hashtags"]').value;
+var tagsList = editFormPopup.querySelector('input[name="hashtags"]');
 var tagsListInput = editFormPopup.querySelector('input[name="hashtags"]');
 var submitFormButton = editFormPopup.querySelector('.img-upload__submit');
 var currentFilter;
 
-// Добавить проверки: хэш-теги разделяются пробелами;
-// один и тот же хэш-тег не может быть использован дважды;
-
 var isValid = function () {
-  var tagListData = tagsList.split(' ');
-  var valid = true;
-  var message = '';
-  // var uniqueHashtagsList = [];
+  var tagListData = tagsList.value.split(' ');;
+  var uniqueHashtagsList = [];
   if (tagListData.length > 5) {
-    message = 'Нельзя указать больше пяти хэш-тегов';
-    return valid = false;
+    return 'Нельзя указать больше пяти хэш-тегов';
   }
+  console.log(tagListData, tagsList)
   for (var i = 0; i < tagListData.length; i++) {
     var tag = tagListData[i].toLowerCase();
     if (tag.charAt(0) !== "#" ) {
-      message = 'Хеш-тег должен начинаться с #'
-      return valid = false;
+      return 'Хеш-тег должен начинаться с #';
+    }
+    if (tag.slice(1).includes('#')) {
+      return 'Хэш-теги должны разделяться пробелами';
     }
     if (tag.length === 1) {
-      message = 'Хеш-тег не может состоять только из #';
-      return valid = false;
+      return 'Хеш-тег не может состоять только из #';
     }
     if (tag.length > 20) {
-      message = 'Максимальная длина хэш-тега должна быть 20 символов';
-      return valid = false;
+      return 'Максимальная длина хэш-тега должна быть 20 символов';
     }
-    // if (!uniqueHashtagsList.includes(tag)) {
-    //   uniqueHashtagsList.push(tag);
-    // }
+    if (!uniqueHashtagsList.includes(tag)) {
+      uniqueHashtagsList.push(tag);
+    }
   };
+  if (uniqueHashtagsList.length !== tagListData.length) {
+    return 'один и тот же хэш-тег не может быть использован дважды'
+  }
   return valid;
 };
-
-var hashtagsAreValid = isValid();
 
 var showeditFormPopup = function () {
   editFormPopup.classList.remove('hidden');
@@ -156,7 +152,8 @@ var closeForm = function () {
 };
 
 var submitForm = function () {
-  if (!hashtagsAreValid) {
+  var message = isValid()
+  if (message) {
     tagsListInput.setCustomValidity(message);
     return;
   }
@@ -171,7 +168,7 @@ var setFilter = function (id) {
 var setEffectLevel = function (max) {
   var p;
   if (max) {
-    p = max;
+    p = 1;
   } else {
     var width = slider.offsetWidth;
     var left = sliderPin.offsetLeft;
@@ -224,7 +221,7 @@ var onEnterPressSubmitForm = function (evt) {
 var onChangeEffect = function (evt) {
   var id = evt.target.value;
   setFilter(id);
-  setEffectLevel(1);
+  setEffectLevel(true);
 }
 
 uploadFile.addEventListener('change', onUploadFileChange);
