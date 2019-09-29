@@ -92,60 +92,115 @@ imagesList.appendChild(fragment);
 
 
 var uploadFile = document.querySelector('#upload-file');
-var editForm = document.querySelector('.img-upload__overlay');
-var closeEditForm = editForm.querySelector('#upload-cancel')
-var sliderPin = editForm.querySelector('.effect-level__pin');
-var slider = editForm.querySelector('.effect-level__line');
-var tagsList = editForm.querySelector('input[name="hashtags"]').value;
+var editFormPopup = document.querySelector('.img-upload__overlay');
+var closeEditFormPopup = editFormPopup.querySelector('#upload-cancel');
+
+var sliderPin = editFormPopup.querySelector('.effect-level__pin');
+var slider = editFormPopup.querySelector('.effect-level__line');
+var image = editFormPopup.querySelector('.img-upload__preview img');
+var effectPreviewFields = editFormPopup.querySelectorAll('input[name="effect"]');
+var effectValueField = editFormPopup.querySelector('.effect-level__value');
+
+var editForm = document.querySelector('.img-upload__form');
+var tagsList = editFormPopup.querySelector('input[name="hashtags"]').value;
+var tagsListInput = editFormPopup.querySelector('input[name="hashtags"]');
+var submitFormButton = editFormPopup.querySelector('.img-upload__submit');
+var currentFilter;
+
+// Добавить проверки: хэш-теги разделяются пробелами;
+// один и тот же хэш-тег не может быть использован дважды;
 
 var isValid = function () {
   var tagListData = tagsList.split(' ');
   var valid = true;
+  var message = '';
+  // var uniqueHashtagsList = [];
   if (tagListData.length > 5) {
+    message = 'Нельзя указать больше пяти хэш-тегов';
     return valid = false;
   }
   for (var i = 0; i < tagListData.length; i++) {
-    var tag = tagListData[i];
+    var tag = tagListData[i].toLowerCase();
     if (tag.charAt(0) !== "#" ) {
+      message = 'Хеш-тег должен начинаться с #'
       return valid = false;
     }
     if (tag.length === 1) {
+      message = 'Хеш-тег не может состоять только из #';
       return valid = false;
     }
     if (tag.length > 20) {
+      message = 'Максимальная длина хэш-тега должна быть 20 символов';
       return valid = false;
     }
+    // if (!uniqueHashtagsList.includes(tag)) {
+    //   uniqueHashtagsList.push(tag);
+    // }
   };
   return valid;
-}
+};
 
-isValid();
+var hashtagsAreValid = isValid();
 
-// хэш-теги разделяются пробелами;
-// один и тот же хэш-тег не может быть использован дважды;
-// теги нечувствительны к регистру: #ХэшТег и #хэштег считаются одним и тем же тегом;
-
-
-var showEditForm = function () {
-  editForm.classList.remove('hidden');
-  closeEditForm.addEventListener('click', onCloseForm);
+var showeditFormPopup = function () {
+  editFormPopup.classList.remove('hidden');
+  closeEditFormPopup.addEventListener('click', onCloseForm);
   document.addEventListener('keydown', onPressEscClose);
 };
 
 var closeForm = function () {
-  editForm.classList.add('hidden');
+  editFormPopup.classList.add('hidden');
   uploadFile.value = '';
-  document.removeEventListener('change', onUploadFileChange);
   document.removeEventListener('click', onCloseForm);
   document.removeEventListener('keydown', onPressEscClose);
 };
 
-var changeEffectLevel = function () {
+var submitForm = function () {
+  if (!hashtagsAreValid) {
+    tagsListInput.setCustomValidity(message);
+    return;
+  }
+  editForm.submit();
+};
 
+var setFilter = function (id) {
+  image.className = 'effects__preview--' + id;
+  currentFilter = id;
+};
+
+var setEffectLevel = function (max) {
+  var p;
+  if (max) {
+    p = max;
+  } else {
+    var width = slider.offsetWidth;
+    var left = sliderPin.offsetLeft;
+    p = left/width;
+  }
+  var value='';
+
+  switch(currentFilter) {
+    case 'chrome':
+      value = 'grayscale(' + p + ')';
+      break;
+    case 'sepia':
+      value = 'sepia(' + p + ')';
+      break;
+    case 'marvin':
+      value = 'invert(' + p * 100 + '%)';
+      break;
+    case 'phobos':
+      value = 'blur(' + p * 3 + 'px)';
+      break;
+    case 'heat':
+      value = 'invert(' + p * 3 + ')';
+      break;
+  }
+  image.style.filter = value;
 };
 
 var onUploadFileChange = function () {
-  showEditForm();
+  showeditFormPopup();
 };
 
 var onCloseForm = function () {
@@ -158,20 +213,26 @@ var onPressEscClose = function(evt) {
   }
 };
 
-var onMouseUpEffectLevel = function (evt) {
-  var width = slider.offsetWidth;
-  var left = sliderPin.offsetLeft;
-  var p = left * 100/width;
-
-  changeEffectLevel();
+var onMouseUpEffectLevel = function () {
+  setEffectLevel()
 };
+
+var onEnterPressSubmitForm = function (evt) {
+  submitForm();
+}
+
+var onChangeEffect = function (evt) {
+  var id = evt.target.value;
+  setFilter(id);
+  setEffectLevel(1);
+}
 
 uploadFile.addEventListener('change', onUploadFileChange);
 sliderPin.addEventListener('mouseup', onMouseUpEffectLevel);
 
+for (var i = 0; i < effectPreviewFields.length; i++) {
+  effectPreviewFields[i].addEventListener('change', onChangeEffect);
+};
+submitFormButton.addEventListener('click', onEnterPressSubmitForm);
 
-//.effect-level__pin mouseup, изменять уровень насыщенности фильтра для изображения.
-//рассчитать положение пина слайдера относительно всего блока и воспользоваться пропорцией
-// при переключении сбросить насыщенность
-//какой ивент будет при переключении?
 // если фокус находится в поле ввода хэш-тега, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
