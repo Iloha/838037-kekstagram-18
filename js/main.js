@@ -1,6 +1,6 @@
 'use strict';
 
-var COMMENTS_NUMBER = 2;
+var COMMENTS_NUMBER = 6;
 var IMAGES_NUMBER = 25;
 var AVATAR_MAX = 6;
 var LIKES_MIN = 15;
@@ -66,7 +66,7 @@ var generateArray = function (j) {
   }
 
   return dataArray;
-}
+};
 
 var renderImage = function (image) {
   var ImageElement = imagesTemplate.cloneNode(true);
@@ -237,4 +237,35 @@ for (var i = 0; i < effectPreviewFields.length; i++) {
   effectPreviewFields[i].addEventListener('change', onChangeEffect);
 }
 submitFormButton.addEventListener('click', onEnterPressSubmitForm);
-// если фокус находится в поле ввода хэш-тега, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
+
+/* task 6 */
+var bigPicture = document.querySelector('.big-picture');
+var bigPictureImg = bigPicture.querySelector('.big-picture__img img');
+var likesCount = bigPicture.querySelector('.likes-count');
+var commentsCount = bigPicture.querySelector('.comments-count');
+var socialCaption = bigPicture.querySelector('.social__caption');
+var comments = bigPicture.querySelector('.social__comments');
+
+var showBigPicture = function () {
+  bigPicture.classList.remove('hidden');
+};
+showBigPicture();
+
+var fillBigPicture = function (picture) {
+  bigPictureImg.setAttribute('src', picture.url);
+  likesCount.textContent = picture.likes;
+  commentsCount.textContent = picture.comments.length;
+  socialCaption.textContent = picture.description;
+};
+fillBigPicture(imagesArray[0]);
+
+
+// Список комментариев под фотографией: комментарии должны вставляться в блок .social__comments. Разметка каждого комментария должна выглядеть так:
+// <li class="social__comment">
+//   <img
+//     class="social__picture"
+//     src="img/avatar-{{случайное число от 1 до 6}}.svg"
+//     alt="{{Автор комментария}}"
+//     width="35" height="35">
+//   <p class="social__text">{{текст комментария}}</p>
+// </li>
