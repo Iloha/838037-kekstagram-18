@@ -103,13 +103,12 @@ var image = editFormPopup.querySelector('.img-upload__preview img');
 var effectPreviewFields = editFormPopup.querySelectorAll('input[name="effect"]');
 
 var editForm = document.querySelector('.img-upload__form');
-var tagsList = editFormPopup.querySelector('input[name="hashtags"]');
 var tagsListInput = editFormPopup.querySelector('input[name="hashtags"]');
 var submitFormButton = editFormPopup.querySelector('.img-upload__submit');
 var currentFilter;
 
 var isValid = function () {
-  var tagListData = tagsList.value.split(' ');
+  var tagListData = tagsListInput.value.split(' ');
   var uniqueHashtagsList = [];
 
   if (tagListData.length > 5) {
@@ -205,7 +204,7 @@ var onCloseForm = function () {
 };
 
 var onPressEscClose = function (evt) {
-  if (evt.keyCode === ESC_CODE) {
+  if (evt.keyCode === ESC_CODE && document.activeElement !== tagsListInput) {
     closeForm();
   }
 };
