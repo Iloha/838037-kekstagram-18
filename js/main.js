@@ -1,3 +1,5 @@
+'use strict';
+
 var COMMENTS_NUMBER = 2;
 var IMAGES_NUMBER = 25;
 var AVATAR_MAX = 6;
@@ -45,7 +47,7 @@ var generateComments = function () {
       avatar: 'img/avatar-' + getRandomArbitrary(1, AVATAR_MAX) + '.svg',
       message: getRandomFromArray(comments),
       name: getRandomFromArray(namesArray)
-    })
+    });
   }
 
   return commentsArray;
@@ -90,7 +92,7 @@ var imagesArray = generateArray(IMAGES_NUMBER);
 var fragment = renderImagesList(imagesArray);
 imagesList.appendChild(fragment);
 
-//module4-task2
+// module4-task2
 var uploadFile = document.querySelector('#upload-file');
 var editFormPopup = document.querySelector('.img-upload__overlay');
 var closeEditFormPopup = editFormPopup.querySelector('#upload-cancel');
@@ -99,7 +101,6 @@ var sliderPin = editFormPopup.querySelector('.effect-level__pin');
 var slider = editFormPopup.querySelector('.effect-level__line');
 var image = editFormPopup.querySelector('.img-upload__preview img');
 var effectPreviewFields = editFormPopup.querySelectorAll('input[name="effect"]');
-var effectValueField = editFormPopup.querySelector('.effect-level__value');
 
 var editForm = document.querySelector('.img-upload__form');
 var tagsList = editFormPopup.querySelector('input[name="hashtags"]');
@@ -108,15 +109,15 @@ var submitFormButton = editFormPopup.querySelector('.img-upload__submit');
 var currentFilter;
 
 var isValid = function () {
-  var tagListData = tagsList.value.split(' ');;
+  var tagListData = tagsList.value.split(' ');
   var uniqueHashtagsList = [];
+
   if (tagListData.length > 5) {
     return 'Нельзя указать больше пяти хэш-тегов';
   }
-  console.log(tagListData, tagsList)
   for (var i = 0; i < tagListData.length; i++) {
     var tag = tagListData[i].toLowerCase();
-    if (tag.charAt(0) !== "#" ) {
+    if (tag.charAt(0) !== '#' ) {
       return 'Хеш-тег должен начинаться с #';
     }
     if (tag.slice(1).includes('#')) {
@@ -131,14 +132,13 @@ var isValid = function () {
     if (!uniqueHashtagsList.includes(tag)) {
       uniqueHashtagsList.push(tag);
     }
-  };
-  if (uniqueHashtagsList.length !== tagListData.length) {
-    return 'один и тот же хэш-тег не может быть использован дважды'
   }
-  return valid;
+  if (uniqueHashtagsList.length !== tagListData.length) {
+    return 'Один и тот же хэш-тег не может быть использован дважды';
+  }
 };
 
-var showeditFormPopup = function () {
+var showEditFormPopup = function () {
   editFormPopup.classList.remove('hidden');
   closeEditFormPopup.addEventListener('click', onCloseForm);
   document.addEventListener('keydown', onPressEscClose);
@@ -152,11 +152,13 @@ var closeForm = function () {
 };
 
 var submitForm = function () {
-  var message = isValid()
+  var message = isValid();
+
   if (message) {
     tagsListInput.setCustomValidity(message);
     return;
   }
+
   editForm.submit();
 };
 
@@ -170,13 +172,11 @@ var setEffectLevel = function (max) {
   if (max) {
     p = 1;
   } else {
-    var width = slider.offsetWidth;
-    var left = sliderPin.offsetLeft;
-    p = left/width;
+    p = sliderPin.offsetLeft / slider.offsetWidth;
   }
-  var value='';
+  var value = '';
 
-  switch(currentFilter) {
+  switch (currentFilter) {
     case 'chrome':
       value = 'grayscale(' + p + ')';
       break;
@@ -197,39 +197,39 @@ var setEffectLevel = function (max) {
 };
 
 var onUploadFileChange = function () {
-  showeditFormPopup();
+  showEditFormPopup();
 };
 
 var onCloseForm = function () {
   closeForm();
 };
 
-var onPressEscClose = function(evt) {
+var onPressEscClose = function (evt) {
   if (evt.keyCode === ESC_CODE) {
     closeForm();
   }
 };
 
 var onMouseUpEffectLevel = function () {
-  setEffectLevel()
+  setEffectLevel();
 };
 
-var onEnterPressSubmitForm = function (evt) {
+var onEnterPressSubmitForm = function () {
   submitForm();
-}
+};
 
 var onChangeEffect = function (evt) {
   var id = evt.target.value;
   setFilter(id);
   setEffectLevel(true);
-}
+};
 
 uploadFile.addEventListener('change', onUploadFileChange);
 sliderPin.addEventListener('mouseup', onMouseUpEffectLevel);
 
 for (var i = 0; i < effectPreviewFields.length; i++) {
   effectPreviewFields[i].addEventListener('change', onChangeEffect);
-};
+}
 submitFormButton.addEventListener('click', onEnterPressSubmitForm);
 
 // если фокус находится в поле ввода хэш-тега, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
