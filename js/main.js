@@ -238,7 +238,8 @@ for (var i = 0; i < effectPreviewFields.length; i++) {
 }
 submitFormButton.addEventListener('click', onEnterPressSubmitForm);
 
-/* task 6 */
+/* Module 3 task 3 */
+
 var bigPicture = document.querySelector('.big-picture');
 var bigPictureImg = bigPicture.querySelector('.big-picture__img img');
 var likesCount = bigPicture.querySelector('.likes-count');
@@ -251,7 +252,6 @@ var commentsLoader = bigPicture.querySelector('.comments-loader');
 var showBigPicture = function () {
   bigPicture.classList.remove('hidden');
 };
-showBigPicture();
 
 var fillBigPicture = function (picture) {
   bigPictureImg.setAttribute('src', picture.url);
@@ -259,14 +259,6 @@ var fillBigPicture = function (picture) {
   commentsCount.textContent = picture.comments.length;
   socialCaption.textContent = picture.description;
 };
-fillBigPicture(imagesArray[0]);
-
-var hideComments = function () {
-  commentsCountWrapper.classList.add('visually-hidden');
-  commentsLoader.classList.add('visually-hidden');
-};
-
-hideComments();
 
 var renderCommentsTemplate = function (commentsList) {
   var template = '';
@@ -276,4 +268,12 @@ var renderCommentsTemplate = function (commentsList) {
   commentsWrapper.innerHTML = template;
 };
 
+var hideComments = function () {
+  commentsCountWrapper.classList.add('visually-hidden');
+  commentsLoader.classList.add('visually-hidden');
+};
+
+showBigPicture();
+fillBigPicture(imagesArray[0]);
+hideComments();
 renderCommentsTemplate(imagesArray[0].comments);
