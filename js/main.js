@@ -99,6 +99,7 @@ var closeEditFormPopup = editFormPopup.querySelector('#upload-cancel');
 
 var sliderPin = editFormPopup.querySelector('.effect-level__pin');
 var slider = editFormPopup.querySelector('.effect-level__line');
+var sliderWrap = editFormPopup.querySelector('.img-upload__effect-level')
 var image = editFormPopup.querySelector('.img-upload__preview img');
 var effectPreviewFields = editFormPopup.querySelectorAll('input[name="effect"]');
 
@@ -111,6 +112,9 @@ var isValid = function () {
   var tagListData = tagsListInput.value.split(' ');
   var uniqueHashtagsList = [];
 
+  if (tagsListInput.value === '') {
+    return '';
+  }
   if (tagListData.length > 5) {
     return 'Нельзя указать больше пяти хэш-тегов';
   }
@@ -176,6 +180,9 @@ var setEffectLevel = function (max) {
   var value = '';
 
   switch (currentFilter) {
+    case 'none':
+      sliderWrap.classList.add('hidden');
+      break;
     case 'chrome':
       value = 'grayscale(' + p + ')';
       break;
@@ -230,5 +237,4 @@ for (var i = 0; i < effectPreviewFields.length; i++) {
   effectPreviewFields[i].addEventListener('change', onChangeEffect);
 }
 submitFormButton.addEventListener('click', onEnterPressSubmitForm);
-
 // если фокус находится в поле ввода хэш-тега, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
