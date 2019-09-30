@@ -244,7 +244,9 @@ var bigPictureImg = bigPicture.querySelector('.big-picture__img img');
 var likesCount = bigPicture.querySelector('.likes-count');
 var commentsCount = bigPicture.querySelector('.comments-count');
 var socialCaption = bigPicture.querySelector('.social__caption');
-var comments = bigPicture.querySelector('.social__comments');
+var commentsWrapper = bigPicture.querySelector('.social__comments');
+var commentsCountWrapper = bigPicture.querySelector('.social__comment-count');
+var commentsLoader = bigPicture.querySelector('.comments-loader');
 
 var showBigPicture = function () {
   bigPicture.classList.remove('hidden');
@@ -259,13 +261,19 @@ var fillBigPicture = function (picture) {
 };
 fillBigPicture(imagesArray[0]);
 
+var hideComments = function () {
+  commentsCountWrapper.classList.add('visually-hidden');
+  commentsLoader.classList.add('visually-hidden');
+};
 
-// Список комментариев под фотографией: комментарии должны вставляться в блок .social__comments. Разметка каждого комментария должна выглядеть так:
-// <li class="social__comment">
-//   <img
-//     class="social__picture"
-//     src="img/avatar-{{случайное число от 1 до 6}}.svg"
-//     alt="{{Автор комментария}}"
-//     width="35" height="35">
-//   <p class="social__text">{{текст комментария}}</p>
-// </li>
+hideComments();
+
+var renderCommentsTemplate = function (commentsList) {
+  var template = '';
+  for (var i = 0; i < commentsList.length; i++) {
+    template += '<li class="social__comment"><img class="social__picture" src="' + commentsList[i].avatar + '" alt="' + commentsList[i].name  + '" width="35" height="35"><p class="social__text">' + commentsList[i].message + '</p></li>'
+  }
+  commentsWrapper.innerHTML = template;
+};
+
+renderCommentsTemplate(imagesArray[0].comments);
