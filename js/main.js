@@ -69,7 +69,7 @@ var generateArray = function (j) {
   return dataArray;
 };
 
-var onEnterPressPicture = function (evt) {
+var onEnterPressPicture = function (evt, picture) {
   if (evt.keyCode === ENTER_CODE) {
     showBigPicture(picture);
   }
@@ -88,7 +88,9 @@ var renderImage = function (image) {
   ImageElement.addEventListener('click', function () {
     onClickPictureShow(image);
   });
-  ImageElement.addEventListener('keydown', onEnterPressPicture);
+  ImageElement.addEventListener('keydown', function () {
+    onEnterPressPicture(image);
+  });
 
   return ImageElement;
 };
@@ -101,7 +103,7 @@ var renderImagesList = function (array) {
   }
 
   return fragment;
-}
+};
 
 var imagesArray = generateArray(IMAGES_NUMBER);
 var fragment = renderImagesList(imagesArray);
@@ -225,8 +227,18 @@ var onCloseForm = function () {
   closeForm();
 };
 
+var commentsField = editForm.querySelector('.text__description');
+
+var ableToEsc = function () {
+  console.log(document.activeElement, tagsListInput, commentsField);
+  if (document.activeElement === tagsListInput || document.activeElement === commentsField) {
+    return false;
+  }
+  return true;
+};
+
 var onPressEscClose = function (evt) {
-  if (evt.keyCode === ESC_CODE && document.activeElement !== tagsListInput) {
+  if (evt.keyCode === ESC_CODE && ableToEsc()) {
     closeForm();
   }
 };
@@ -263,6 +275,7 @@ var socialCaption = bigPicture.querySelector('.social__caption');
 var commentsWrapper = bigPicture.querySelector('.social__comments');
 var commentsCountWrapper = bigPicture.querySelector('.social__comment-count');
 var commentsLoader = bigPicture.querySelector('.comments-loader');
+var addCommentField = bigPicture.querySelector('.social__footer-text');
 
 var showBigPicture = function (picture) {
   bigPicture.classList.remove('hidden');
@@ -295,7 +308,6 @@ hideComments();
 /* Module 4 task 3 */
 
 var bigPictureCancel = bigPicture.querySelector('.big-picture__cancel');
-// var pictures = document.querySelectorAll('.picture');
 
 var closeBigPicture = function () {
   bigPicture.classList.add('hidden');
@@ -307,12 +319,10 @@ var onCloseBigPicture = function () {
 };
 
 var onPressEscBigPicture = function (evt) {
-  if (evt.keyCode === ESC_CODE) {
+  if (evt.keyCode === ESC_CODE && document.activeElement !== addCommentField) {
     closeBigPicture();
   }
 };
-
-
 
 bigPictureCancel.addEventListener('click', onCloseBigPicture);
 
