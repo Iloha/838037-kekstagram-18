@@ -6,6 +6,7 @@ var AVATAR_MAX = 6;
 var LIKES_MIN = 15;
 var LIKES_MAX = 200;
 var ESC_CODE = 27;
+var ENTER_CODE = 13;
 
 var imagesTemplate = document.querySelector('#picture')
   .content
@@ -68,12 +69,28 @@ var generateArray = function (j) {
   return dataArray;
 };
 
+var onEnterPressPicture = function (evt, picture) {
+  if (evt.keyCode === ENTER_CODE) {
+    showBigPicture(picture);
+  }
+};
+
+var onClickPictureShow = function (picture) {
+  showBigPicture(picture);
+};
+
 var renderImage = function (image) {
   var ImageElement = imagesTemplate.cloneNode(true);
 
   ImageElement.querySelector('.picture__img').setAttribute('src', image.url);
   ImageElement.querySelector('.picture__likes').textContent = image.likes;
   ImageElement.querySelector('.picture__comments').textContent = image.comments.length;
+  ImageElement.addEventListener('click', function () {
+    onClickPictureShow(image);
+  });
+  ImageElement.addEventListener('keydown', function () {
+    onEnterPressPicture(image);
+  });
 
   return ImageElement;
 };
@@ -86,7 +103,7 @@ var renderImagesList = function (array) {
   }
 
   return fragment;
-}
+};
 
 var imagesArray = generateArray(IMAGES_NUMBER);
 var fragment = renderImagesList(imagesArray);
@@ -99,7 +116,7 @@ var closeEditFormPopup = editFormPopup.querySelector('#upload-cancel');
 
 var sliderPin = editFormPopup.querySelector('.effect-level__pin');
 var slider = editFormPopup.querySelector('.effect-level__line');
-var sliderWrap = editFormPopup.querySelector('.img-upload__effect-level')
+var sliderWrap = editFormPopup.querySelector('.img-upload__effect-level');
 var image = editFormPopup.querySelector('.img-upload__preview img');
 var effectPreviewFields = editFormPopup.querySelectorAll('input[name="effect"]');
 
@@ -210,8 +227,18 @@ var onCloseForm = function () {
   closeForm();
 };
 
+var commentsField = editForm.querySelector('.text__description');
+
+var ableToEsc = function () {
+  console.log(document.activeElement, tagsListInput, commentsField);
+  if (document.activeElement === tagsListInput || document.activeElement === commentsField) {
+    return false;
+  }
+  return true;
+};
+
 var onPressEscClose = function (evt) {
-  if (evt.keyCode === ESC_CODE && document.activeElement !== tagsListInput) {
+  if (evt.keyCode === ESC_CODE && ableToEsc()) {
     closeForm();
   }
 };
@@ -248,9 +275,11 @@ var socialCaption = bigPicture.querySelector('.social__caption');
 var commentsWrapper = bigPicture.querySelector('.social__comments');
 var commentsCountWrapper = bigPicture.querySelector('.social__comment-count');
 var commentsLoader = bigPicture.querySelector('.comments-loader');
+var addCommentField = bigPicture.querySelector('.social__footer-text');
 
-var showBigPicture = function () {
+var showBigPicture = function (picture) {
   bigPicture.classList.remove('hidden');
+  fillBigPicture(picture);
 };
 
 var fillBigPicture = function (picture) {
@@ -258,6 +287,7 @@ var fillBigPicture = function (picture) {
   likesCount.textContent = picture.likes;
   commentsCount.textContent = picture.comments.length;
   socialCaption.textContent = picture.description;
+  renderCommentsTemplate(picture.comments);
 };
 
 var renderCommentsTemplate = function (commentsList) {
@@ -273,7 +303,27 @@ var hideComments = function () {
   commentsLoader.classList.add('visually-hidden');
 };
 
-showBigPicture();
-fillBigPicture(imagesArray[0]);
 hideComments();
-renderCommentsTemplate(imagesArray[0].comments);
+
+/* Module 4 task 3 */
+
+var bigPictureCancel = bigPicture.querySelector('.big-picture__cancel');
+
+var closeBigPicture = function () {
+  bigPicture.classList.add('hidden');
+  document.removeEventListener('click', onCloseBigPicture);
+};
+
+var onCloseBigPicture = function () {
+  closeBigPicture();
+};
+
+var onPressEscBigPicture = function (evt) {
+  if (evt.keyCode === ESC_CODE && document.activeElement !== addCommentField) {
+    closeBigPicture();
+  }
+};
+
+bigPictureCancel.addEventListener('click', onCloseBigPicture);
+
+document.addEventListener('keydown', onPressEscBigPicture);
