@@ -16,7 +16,7 @@ var tagsListInput = editFormPopup.querySelector('input[name="hashtags"]');
 var submitFormButton = editFormPopup.querySelector('.img-upload__submit');
 var currentFilter;
 
-var isValid = function () {
+var getErrorMessage = function () {
   var tagListData = tagsListInput.value.split(' ');
   var uniqueHashtagsList = [];
 
@@ -63,7 +63,7 @@ var closeForm = function () {
 };
 
 var submitForm = function () {
-  var message = isValid();
+  var message = getErrorMessage();
 
   if (message) {
     tagsListInput.setCustomValidity(message);
@@ -120,15 +120,15 @@ var onCloseForm = function () {
 
 var commentsField = editForm.querySelector('.text__description');
 
-var ableToEsc = function () {
-  if (document.activeElement === tagsListInput || document.activeElement === commentsField) {
+var ableToEsc = function (evt) {
+  if (evt.target === tagsListInput || evt.target === commentsField) {
     return false;
   }
   return true;
 };
 
 var onPressEscClose = function (evt) {
-  if (evt.keyCode === window.data.ESC_CODE && ableToEsc()) {
+  if (evt.keyCode === window.data.ESC_CODE && ableToEsc(evt)) {
     closeForm();
   }
 };
