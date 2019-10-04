@@ -1,6 +1,6 @@
 'use strict';
 
-// module4-task2
+
 var uploadFile = document.querySelector('#upload-file');
 var editFormPopup = document.querySelector('.img-upload__overlay');
 var closeEditFormPopup = editFormPopup.querySelector('#upload-cancel');
@@ -14,6 +14,7 @@ var effectPreviewFields = editFormPopup.querySelectorAll('input[name="effect"]')
 var editForm = document.querySelector('.img-upload__form');
 var tagsListInput = editFormPopup.querySelector('input[name="hashtags"]');
 var submitFormButton = editFormPopup.querySelector('.img-upload__submit');
+var effectDepth = editForm.querySelector('.effect-level__depth');
 var currentFilter;
 
 var getErrorMessage = function () {
@@ -51,6 +52,7 @@ var getErrorMessage = function () {
 
 var showEditFormPopup = function () {
   editFormPopup.classList.remove('hidden');
+  sliderWrap.classList.add('hidden');
   setEffectLevel();
   closeEditFormPopup.addEventListener('click', onCloseForm);
   document.addEventListener('keydown', onPressEscClose);
@@ -114,6 +116,12 @@ var setEffectLevel = function (max) {
       break;
   }
   image.style.filter = value;
+
+  var setEffectDepth = function () {
+    effectDepth.style.width = (p * 100) + '%';
+  };
+  setEffectDepth();
+  setPinPosition(0, p === 1);
 };
 
 var onUploadFileChange = function () {
@@ -130,6 +138,7 @@ var ableToEsc = function (evt) {
   if (evt.target === tagsListInput || evt.target === commentsField) {
     return false;
   }
+
   return true;
 };
 
@@ -139,37 +148,35 @@ var onPressEscClose = function (evt) {
   }
 };
 
+var setPinPosition = function (shift, max) {
+  if (max || sliderPin.offsetLeft - shift > slider.offsetWidth) {
+    sliderPin.style.left = slider.offsetWidth + 'px';
+  } else if (sliderPin.offsetLeft - shift <= 0) {
+    sliderPin.style.left = 0 + 'px';
+  } else {
+    sliderPin.style.left = (sliderPin.offsetLeft - shift) + 'px';
+  }
+};
 
 var onMouseDownEffectLevel = function (evt) {
-  var startCoords = {
-    x: evt.clientX
-  };
-  console.log('click down')
+  var startX = evt.clientX;
 
   var onMouseMoveEffectLevel = function (moveEvt) {
     moveEvt.preventDefault();
-    console.log(startCoords, 'move');
-    var shift = {
-      x: startCoords.x - moveEvt.clientX
-    };
-
-    startCoords = {
-      x: moveEvt.clientX
-    };
-
-    sliderPin.style.left = (sliderPin.offsetLeft - shift.x) + 'px';
+    var shift = startX - moveEvt.clientX;
+    startX = moveEvt.clientX;
+    setPinPosition(shift);
   };
 
   var onMouseUpEffectLevel = function (upEvt) {
     setEffectLevel();
     upEvt.preventDefault();
-    console.log('up')
     document.removeEventListener('mousemove', onMouseMoveEffectLevel);
     document.removeEventListener('mouseup', onMouseUpEffectLevel);
   };
 
-  sliderPin.addEventListener('mousemove', onMouseMoveEffectLevel);
-  sliderPin.addEventListener('mouseup', onMouseUpEffectLevel);
+  document.addEventListener('mousemove', onMouseMoveEffectLevel);
+  document.addEventListener('mouseup', onMouseUpEffectLevel);
 };
 
 var onEnterPressSubmitForm = function () {
@@ -188,8 +195,4 @@ for (var i = 0; i < effectPreviewFields.length; i++) {
   effectPreviewFields[i].addEventListener('change', onChangeEffect);
 }
 submitFormButton.addEventListener('click', onEnterPressSubmitForm);
-
 sliderPin.addEventListener('mousedown', onMouseDownEffectLevel);
-
-// в котором вычисляются новые координаты, применяться через стили к элементу и записываться в поле уровня эффекта (с поправкой на то, что в это поле записываются координаты середины пина)
-// должно меняться значение CSS-фильтра на изображении
