@@ -51,6 +51,7 @@ var getErrorMessage = function () {
 
 var showEditFormPopup = function () {
   editFormPopup.classList.remove('hidden');
+  setEffectLevel();
   closeEditFormPopup.addEventListener('click', onCloseForm);
   document.addEventListener('keydown', onPressEscClose);
 };
@@ -92,18 +93,23 @@ var setEffectLevel = function (max) {
       sliderWrap.classList.add('hidden');
       break;
     case 'chrome':
+      sliderWrap.classList.remove('hidden');
       value = 'grayscale(' + p + ')';
       break;
     case 'sepia':
+      sliderWrap.classList.remove('hidden');
       value = 'sepia(' + p + ')';
       break;
     case 'marvin':
+      sliderWrap.classList.remove('hidden');
       value = 'invert(' + p * 100 + '%)';
       break;
     case 'phobos':
+      sliderWrap.classList.remove('hidden');
       value = 'blur(' + p * 3 + 'px)';
       break;
     case 'heat':
+      sliderWrap.classList.remove('hidden');
       value = 'invert(' + p * 3 + ')';
       break;
   }
@@ -133,8 +139,37 @@ var onPressEscClose = function (evt) {
   }
 };
 
-var onMouseUpEffectLevel = function () {
-  setEffectLevel();
+
+var onMouseDownEffectLevel = function (evt) {
+  var startCoords = {
+    x: evt.clientX
+  };
+  console.log('click down')
+
+  var onMouseMoveEffectLevel = function (moveEvt) {
+    moveEvt.preventDefault();
+    console.log(startCoords, 'move');
+    var shift = {
+      x: startCoords.x - moveEvt.clientX
+    };
+
+    startCoords = {
+      x: moveEvt.clientX
+    };
+
+    sliderPin.style.left = (sliderPin.offsetLeft - shift.x) + 'px';
+  };
+
+  var onMouseUpEffectLevel = function (upEvt) {
+    setEffectLevel();
+    upEvt.preventDefault();
+    console.log('up')
+    document.removeEventListener('mousemove', onMouseMoveEffectLevel);
+    document.removeEventListener('mouseup', onMouseUpEffectLevel);
+  };
+
+  sliderPin.addEventListener('mousemove', onMouseMoveEffectLevel);
+  sliderPin.addEventListener('mouseup', onMouseUpEffectLevel);
 };
 
 var onEnterPressSubmitForm = function () {
@@ -148,9 +183,13 @@ var onChangeEffect = function (evt) {
 };
 
 uploadFile.addEventListener('change', onUploadFileChange);
-sliderPin.addEventListener('mouseup', onMouseUpEffectLevel);
 
 for (var i = 0; i < effectPreviewFields.length; i++) {
   effectPreviewFields[i].addEventListener('change', onChangeEffect);
 }
 submitFormButton.addEventListener('click', onEnterPressSubmitForm);
+
+sliderPin.addEventListener('mousedown', onMouseDownEffectLevel);
+
+// в котором вычисляются новые координаты, применяться через стили к элементу и записываться в поле уровня эффекта (с поправкой на то, что в это поле записываются координаты середины пина)
+// должно меняться значение CSS-фильтра на изображении
