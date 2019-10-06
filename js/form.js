@@ -1,6 +1,6 @@
 'use strict';
 
-// module4-task2
+
 var uploadFile = document.querySelector('#upload-file');
 var editFormPopup = document.querySelector('.img-upload__overlay');
 var closeEditFormPopup = editFormPopup.querySelector('#upload-cancel');
@@ -14,7 +14,14 @@ var effectPreviewFields = editFormPopup.querySelectorAll('input[name="effect"]')
 var editForm = document.querySelector('.img-upload__form');
 var tagsListInput = editFormPopup.querySelector('input[name="hashtags"]');
 var submitFormButton = editFormPopup.querySelector('.img-upload__submit');
+var effectDepth = editForm.querySelector('.effect-level__depth');
 var currentFilter;
+var HASHTAG_MAX_LENGTH = 20;
+var HASHTAGS_MAX_AMOUNT = 5;
+var COORDINATES = {
+  MIN: 0,
+  MAX: 453
+};
 
 var getErrorMessage = function () {
   var tagListData = tagsListInput.value.split(' ');
@@ -23,7 +30,7 @@ var getErrorMessage = function () {
   if (tagsListInput.value === '') {
     return '';
   }
-  if (tagListData.length > 5) {
+  if (tagListData.length > HASHTAGS_MAX_AMOUNT) {
     return 'Нельзя указать больше пяти хэш-тегов';
   }
   for (var i = 0; i < tagListData.length; i++) {
@@ -37,7 +44,7 @@ var getErrorMessage = function () {
     if (tag.length === 1) {
       return 'Хеш-тег не может состоять только из #';
     }
-    if (tag.length > 20) {
+    if (tag.length > HASHTAG_MAX_LENGTH) {
       return 'Максимальная длина хэш-тега должна быть 20 символов';
     }
     if (!uniqueHashtagsList.includes(tag)) {
@@ -51,6 +58,7 @@ var getErrorMessage = function () {
 
 var showEditFormPopup = function () {
   editFormPopup.classList.remove('hidden');
+  sliderWrap.classList.add('hidden');
   closeEditFormPopup.addEventListener('click', onCloseForm);
   document.addEventListener('keydown', onPressEscClose);
 };
@@ -86,11 +94,11 @@ var setEffectLevel = function (max) {
     p = sliderPin.offsetLeft / slider.offsetWidth;
   }
   var value = '';
-
+  sliderWrap.classList.add('hidden');
+  if (currentFilter !== 'none') {
+    sliderWrap.classList.remove('hidden');
+  }
   switch (currentFilter) {
-    case 'none':
-      sliderWrap.classList.add('hidden');
-      break;
     case 'chrome':
       value = 'grayscale(' + p + ')';
       break;
@@ -108,6 +116,14 @@ var setEffectLevel = function (max) {
       break;
   }
   image.style.filter = value;
+
+  var setEffectDepth = function () {
+    effectDepth.style.width = (p * 100) + '%';
+  };
+  setEffectDepth();
+  if (max) {
+    setPinPosition(COORDINATES.MAX);
+  }
 };
 
 var onUploadFileChange = function () {
@@ -124,6 +140,7 @@ var ableToEsc = function (evt) {
   if (evt.target === tagsListInput || evt.target === commentsField) {
     return false;
   }
+
   return true;
 };
 
@@ -133,8 +150,32 @@ var onPressEscClose = function (evt) {
   }
 };
 
-var onMouseUpEffectLevel = function () {
-  setEffectLevel();
+var setPinPosition = function (newValue) {
+  if ((newValue >= COORDINATES.MIN) && (newValue <= COORDINATES.MAX)) {
+    sliderPin.style.left = newValue + 'px';
+  }
+};
+
+var onMouseDownEffectLevel = function (evt) {
+  var startX = evt.clientX;
+
+  var onMouseMoveEffectLevel = function (moveEvt) {
+    moveEvt.preventDefault();
+    var shift = startX - moveEvt.clientX;
+    startX = moveEvt.clientX;
+    var newValue = sliderPin.offsetLeft - shift;
+    setPinPosition(newValue);
+    setEffectLevel();
+  };
+
+  var onMouseUpEffectLevel = function (upEvt) {
+    upEvt.preventDefault();
+    document.removeEventListener('mousemove', onMouseMoveEffectLevel);
+    document.removeEventListener('mouseup', onMouseUpEffectLevel);
+  };
+
+  document.addEventListener('mousemove', onMouseMoveEffectLevel);
+  document.addEventListener('mouseup', onMouseUpEffectLevel);
 };
 
 var onEnterPressSubmitForm = function () {
@@ -148,9 +189,9 @@ var onChangeEffect = function (evt) {
 };
 
 uploadFile.addEventListener('change', onUploadFileChange);
-sliderPin.addEventListener('mouseup', onMouseUpEffectLevel);
 
 for (var i = 0; i < effectPreviewFields.length; i++) {
   effectPreviewFields[i].addEventListener('change', onChangeEffect);
 }
 submitFormButton.addEventListener('click', onEnterPressSubmitForm);
+sliderPin.addEventListener('mousedown', onMouseDownEffectLevel);
