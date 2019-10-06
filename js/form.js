@@ -16,6 +16,12 @@ var tagsListInput = editFormPopup.querySelector('input[name="hashtags"]');
 var submitFormButton = editFormPopup.querySelector('.img-upload__submit');
 var effectDepth = editForm.querySelector('.effect-level__depth');
 var currentFilter;
+var HASHTAG_MAX_LENGTH = 20;
+var HASHTAGS_MAX_AMOUNT = 5;
+var COORDINATES = {
+  MIN: 0,
+  MAX: 453
+};
 
 var getErrorMessage = function () {
   var tagListData = tagsListInput.value.split(' ');
@@ -24,7 +30,7 @@ var getErrorMessage = function () {
   if (tagsListInput.value === '') {
     return '';
   }
-  if (tagListData.length > 5) {
+  if (tagListData.length > HASHTAGS_MAX_AMOUNT) {
     return 'Нельзя указать больше пяти хэш-тегов';
   }
   for (var i = 0; i < tagListData.length; i++) {
@@ -38,7 +44,7 @@ var getErrorMessage = function () {
     if (tag.length === 1) {
       return 'Хеш-тег не может состоять только из #';
     }
-    if (tag.length > 20) {
+    if (tag.length > HASHTAG_MAX_LENGTH) {
       return 'Максимальная длина хэш-тега должна быть 20 символов';
     }
     if (!uniqueHashtagsList.includes(tag)) {
@@ -53,7 +59,6 @@ var getErrorMessage = function () {
 var showEditFormPopup = function () {
   editFormPopup.classList.remove('hidden');
   sliderWrap.classList.add('hidden');
-  setEffectLevel();
   closeEditFormPopup.addEventListener('click', onCloseForm);
   document.addEventListener('keydown', onPressEscClose);
 };
@@ -89,29 +94,24 @@ var setEffectLevel = function (max) {
     p = sliderPin.offsetLeft / slider.offsetWidth;
   }
   var value = '';
-
+  sliderWrap.classList.add('hidden');
+  if (currentFilter !== 'none') {
+    sliderWrap.classList.remove('hidden');
+  }
   switch (currentFilter) {
-    case 'none':
-      sliderWrap.classList.add('hidden');
-      break;
     case 'chrome':
-      sliderWrap.classList.remove('hidden');
       value = 'grayscale(' + p + ')';
       break;
     case 'sepia':
-      sliderWrap.classList.remove('hidden');
       value = 'sepia(' + p + ')';
       break;
     case 'marvin':
-      sliderWrap.classList.remove('hidden');
       value = 'invert(' + p * 100 + '%)';
       break;
     case 'phobos':
-      sliderWrap.classList.remove('hidden');
       value = 'blur(' + p * 3 + 'px)';
       break;
     case 'heat':
-      sliderWrap.classList.remove('hidden');
       value = 'invert(' + p * 3 + ')';
       break;
   }
@@ -121,7 +121,9 @@ var setEffectLevel = function (max) {
     effectDepth.style.width = (p * 100) + '%';
   };
   setEffectDepth();
-  setPinPosition(0, p === 1);
+  if (max) {
+    setPinPosition(COORDINATES.MAX);
+  }
 };
 
 var onUploadFileChange = function () {
@@ -148,13 +150,9 @@ var onPressEscClose = function (evt) {
   }
 };
 
-var setPinPosition = function (shift, max) {
-  if (max || sliderPin.offsetLeft - shift > slider.offsetWidth) {
-    sliderPin.style.left = slider.offsetWidth + 'px';
-  } else if (sliderPin.offsetLeft - shift <= 0) {
-    sliderPin.style.left = 0 + 'px';
-  } else {
-    sliderPin.style.left = (sliderPin.offsetLeft - shift) + 'px';
+var setPinPosition = function (newValue) {
+  if ((newValue >= COORDINATES.MIN) && (newValue <= COORDINATES.MAX)) {
+    sliderPin.style.left = newValue + 'px';
   }
 };
 
@@ -165,11 +163,12 @@ var onMouseDownEffectLevel = function (evt) {
     moveEvt.preventDefault();
     var shift = startX - moveEvt.clientX;
     startX = moveEvt.clientX;
-    setPinPosition(shift);
+    var newValue = sliderPin.offsetLeft - shift;
+    setPinPosition(newValue);
+    setEffectLevel();
   };
 
   var onMouseUpEffectLevel = function (upEvt) {
-    setEffectLevel();
     upEvt.preventDefault();
     document.removeEventListener('mousemove', onMouseMoveEffectLevel);
     document.removeEventListener('mouseup', onMouseUpEffectLevel);
