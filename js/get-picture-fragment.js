@@ -9,7 +9,7 @@
 
   var errorTemplate = document.querySelector('#error')
     .content
-    .querySelector('.error__title');
+    .querySelector('.error');
 
   var onEnterPressPicture = function (evt, picture) {
     if (evt.keyCode === window.data.ENTER_CODE) {
@@ -50,7 +50,8 @@
 
   var errorHandler = function (errorMessage) {
     var errorBlock = errorTemplate.cloneNode(true);
-    errorBlock.textContent = errorMessage;
+
+    errorBlock.querySelector('.error__title').textContent = errorMessage;
     mainSection.insertAdjacentElement('afterbegin', errorBlock);
   };
 
