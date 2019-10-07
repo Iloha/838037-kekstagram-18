@@ -188,6 +188,13 @@ var onChangeEffect = function (evt) {
   setEffectLevel(true);
 };
 
+editForm.addEventListener('submit', function (evt) {
+  window.upload(new FormData(editForm), function (response) {
+    editFormPopup.classList.add('hidden');
+  });
+  evt.preventDefault();
+});
+
 uploadFile.addEventListener('change', onUploadFileChange);
 
 for (var i = 0; i < effectPreviewFields.length; i++) {
