@@ -4,6 +4,7 @@
   var URL = 'https://js.dump.academy/kekstagram/data';
   window.load = function (onSuccess, onError) {
     var xhr = new XMLHttpRequest();
+    xhr.timeout = 4000;
     xhr.responseType = 'json';
     xhr.open('GET', URL);
 
