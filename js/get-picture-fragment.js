@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var mainSection = document.querySelector('main');
+
   var imagesTemplate = document.querySelector('#picture')
     .content
     .querySelector('.picture');
@@ -49,7 +51,7 @@
   var errorHandler = function (errorMessage) {
     var errorBlock = errorTemplate.cloneNode(true);
     errorBlock.textContent = errorMessage;
-    document.body.insertAdjacentElement('afterbegin', errorBlock);
+    mainSection.insertAdjacentElement('afterbegin', errorBlock);
   };
 
   window.load(successHandler, errorHandler);
