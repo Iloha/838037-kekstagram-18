@@ -27,7 +27,7 @@
 
   var renderCommentsTemplate = function (commentsList) {
     var template = '';
-    for (var i = 0; i < commentsList.length; i++) {
+    for (var i = 0; i < window.data.COMMENTS_NUMBER; i++) {
       template += '<li class="social__comment"><img class="social__picture" src="' + commentsList[i].avatar + '" alt="' + commentsList[i].name  + '" width="35" height="35"><p class="social__text">' + commentsList[i].message + '</p></li>'
     }
     commentsWrapper.innerHTML = template;
