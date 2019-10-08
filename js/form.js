@@ -178,9 +178,9 @@ var onMouseDownEffectLevel = function (evt) {
   document.addEventListener('mouseup', onMouseUpEffectLevel);
 };
 
-var onEnterPressSubmitForm = function () {
-  submitForm();
-};
+// var onEnterPressSubmitForm = function () {
+//   submitForm();
+// };
 
 var onChangeEffect = function (evt) {
   var id = evt.target.value;
@@ -188,9 +188,18 @@ var onChangeEffect = function (evt) {
   setEffectLevel(true);
 };
 
+var resetForm = function () {
+
+};
+
 editForm.addEventListener('submit', function (evt) {
-  window.upload(new FormData(editForm), function (response) {
+
+  var formDataTest = new FormData(editForm);
+  console.log('form', editForm, formDataTest);
+
+  window.upload(formDataTest, function (response) {
     editFormPopup.classList.add('hidden');
+    resetForm();
   });
   evt.preventDefault();
 });
@@ -200,5 +209,5 @@ uploadFile.addEventListener('change', onUploadFileChange);
 for (var i = 0; i < effectPreviewFields.length; i++) {
   effectPreviewFields[i].addEventListener('change', onChangeEffect);
 }
-submitFormButton.addEventListener('click', onEnterPressSubmitForm);
+// submitFormButton.addEventListener('click', onEnterPressSubmitForm);
 sliderPin.addEventListener('mousedown', onMouseDownEffectLevel);
