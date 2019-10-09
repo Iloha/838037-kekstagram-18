@@ -16,6 +16,18 @@ var tagsListInput = editFormPopup.querySelector('input[name="hashtags"]');
 var submitFormButton = editFormPopup.querySelector('.img-upload__submit');
 var effectDepth = editForm.querySelector('.effect-level__depth');
 var commentsField = editForm.querySelector('.text__description');
+
+var mainSection = document.querySelector('main');
+var errorTemplate = document.querySelector('#error')
+  .content
+  .querySelector('.error');
+
+var successTemplate = document.querySelector('#success')
+  .content
+  .querySelector('.success');
+var successButton = document.querySelector('.success__button');
+
+
 var currentFilter;
 var HASHTAG_MAX_LENGTH = 20;
 var HASHTAGS_MAX_AMOUNT = 5;
@@ -205,22 +217,79 @@ editForm.addEventListener('submit', function (evt) {
 
   var formDataTest = new FormData(editForm);
 
+
   var errorHandler = function (errorMessage) {
     var errorBlock = errorTemplate.cloneNode(true);
-
+    editFormPopup.classList.add('hidden');
     errorBlock.querySelector('.error__title').textContent = errorMessage;
     mainSection.insertAdjacentElement('afterbegin', errorBlock);
+
+    var closeErrorBlock = function () {
+      errorBlock.style.display = 'none';
+      errorButton.removeEventListener('click', onCloseErrorBlock);
+      document.removeEventListener('keydown', onEscCloseErrorBlock);
+      document.removeEventListener('click', onCloseAnyClickErrorBlock);
+    };
+
+    var errorButton = document.querySelector('.error__button');
+
+    var onCloseErrorBlock = function () {
+      closeErrorBlock();
+    };
+
+    var onEscCloseErrorBlock = function (evtT) {
+      if (evtT.keyCode === window.data.ESC_CODE) {
+        closeErrorBlock();
+      }
+    };
+
+    var onCloseAnyClickErrorBlock = function (evtT) {
+      if (evtT.target !== errorBlock) {
+        closeErrorBlock();
+      }
+    };
+
+    errorButton.addEventListener('click', onCloseErrorBlock);
+    document.addEventListener('keydown', onEscCloseErrorBlock);
+    document.addEventListener('click', onCloseAnyClickErrorBlock);
   };
 
-  var successHandler = function () {
+
+  var successHandler = function (response) {
+    var successBlock = successTemplate.cloneNode(true);
+
     editFormPopup.classList.add('hidden');
     resetForm();
+    mainSection.insertAdjacentElement('afterbegin', successBlock);
 
-    // var errorBlock = errorTemplate.cloneNode(true);
+    var closeSuccessBlock = function () {
+      successBlock.style.display = 'none';
+      successButton.removeEventListener('click', onClose);
+      document.removeEventListener('keydown', onEscClose);
+      document.removeEventListener('click', onCloseAnyClick);
+    };
 
-    // errorBlock.querySelector('.error__title').textContent = errorMessage;
-    // mainSection.insertAdjacentElement('afterbegin', errorBlock);
+    var successButton = document.querySelector('.success__button');
 
+    var onClose = function () {
+      closeSuccessBlock();
+    };
+
+    var onEscClose = function (evtT) {
+      if (evtT.keyCode === window.data.ESC_CODE) {
+        closeSuccessBlock();
+      }
+    };
+
+    var onCloseAnyClick = function (evtT) {
+      if (evtT.target !== successBlock) {
+        closeSuccessBlock();
+      }
+    };
+
+    successButton.addEventListener('click', onClose);
+    document.addEventListener('keydown', onEscClose);
+    document.addEventListener('click', onCloseAnyClick);
   };
 
   window.upload(formDataTest, successHandler, errorHandler);
@@ -236,14 +305,14 @@ sliderPin.addEventListener('mousedown', onMouseDownEffectLevel);
 
 
 // провалидировать форму+
-// отправить данные посредством XHR
+// отправить данные посредством XHR +
 // закрыть форму+
-// данные в форме (комменты, хештеги, фильтры) сбросить до начального
-// вывести на экран сообщение об успешной загрузки
-//   разметка #success нужно разместить в main
+// данные в форме (комменты, хештеги, фильтры) сбросить до начального +-
+// вывести на экран сообщение об успешной загрузки +
+//   разметка #success нужно разместить в main +
 //   закрыть сообщение при нажатии на .success__button, ecs, клику на произвольную область экрана
-// при ошибки при отправке показать сообщение
-//   разметка #error внутри шаблона template, нужно разместить в main
+// при ошибки при отправке показать сообщение +
+//   разметка #error внутри шаблона template, нужно разместить в main +
 //   закрыть сообщение при клике .error__button, Escб по клику на произвольную область экрана.
 
 // пройти по коллеекции и проверить если value не равен none то удалить selected, и если равено то добавить
