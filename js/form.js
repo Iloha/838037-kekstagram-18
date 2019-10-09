@@ -25,7 +25,7 @@ var errorTemplate = document.querySelector('#error')
 var successTemplate = document.querySelector('#success')
   .content
   .querySelector('.success');
-var successButton = document.querySelector('.success__button');
+// var successButton = document.querySelector('.success__button');
 
 
 var currentFilter;
@@ -244,7 +244,7 @@ editForm.addEventListener('submit', function (evt) {
     };
 
     var onCloseAnyClickErrorBlock = function (evtT) {
-      if (evtT.target !== errorBlock) {
+      if (evtT.target === errorBlock) {
         closeErrorBlock();
       }
     };
@@ -264,32 +264,32 @@ editForm.addEventListener('submit', function (evt) {
 
     var closeSuccessBlock = function () {
       successBlock.style.display = 'none';
-      successButton.removeEventListener('click', onClose);
-      document.removeEventListener('keydown', onEscClose);
-      document.removeEventListener('click', onCloseAnyClick);
+      successButton.removeEventListener('click', onCloseSuccessBlock);
+      document.removeEventListener('keydown', onEscCloseSuccessBlock);
+      document.removeEventListener('click', onCloseAnyClickSuccessBlock);
     };
 
     var successButton = document.querySelector('.success__button');
 
-    var onClose = function () {
+    var onCloseSuccessBlock = function () {
       closeSuccessBlock();
     };
 
-    var onEscClose = function (evtT) {
+    var onEscCloseSuccessBlock = function (evtT) {
       if (evtT.keyCode === window.data.ESC_CODE) {
         closeSuccessBlock();
       }
     };
 
-    var onCloseAnyClick = function (evtT) {
-      if (evtT.target !== successBlock) {
+    var onCloseAnyClickSuccessBlock = function (evtT) {
+      if (evtT.target === successBlock) {
         closeSuccessBlock();
       }
     };
 
-    successButton.addEventListener('click', onClose);
-    document.addEventListener('keydown', onEscClose);
-    document.addEventListener('click', onCloseAnyClick);
+    successButton.addEventListener('click', onCloseSuccessBlock);
+    document.addEventListener('keydown', onEscCloseSuccessBlock);
+    document.addEventListener('click', onCloseAnyClickSuccessBlock);
   };
 
   window.upload(formDataTest, successHandler, errorHandler);
