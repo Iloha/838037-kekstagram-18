@@ -188,12 +188,14 @@ var onChangeEffect = function (evt) {
 };
 
 var resetForm = function () {
-  commentsField.textContent = '11';
-
+  commentsField.value = '';
+  tagsListInput.value = '';
+  setFilter('none');
+  setEffectLevel(true);
 };
 
 editForm.addEventListener('submit', function (evt) {
-  console.log('validation')
+  evt.preventDefault();
   var message = getErrorMessage();
 
   if (message) {
@@ -203,11 +205,25 @@ editForm.addEventListener('submit', function (evt) {
 
   var formDataTest = new FormData(editForm);
 
-  window.upload(formDataTest, function (response) {
+  var errorHandler = function (errorMessage) {
+    var errorBlock = errorTemplate.cloneNode(true);
+
+    errorBlock.querySelector('.error__title').textContent = errorMessage;
+    mainSection.insertAdjacentElement('afterbegin', errorBlock);
+  };
+
+  var successHandler = function () {
     editFormPopup.classList.add('hidden');
     resetForm();
-  });
-  evt.preventDefault();
+
+    // var errorBlock = errorTemplate.cloneNode(true);
+
+    // errorBlock.querySelector('.error__title').textContent = errorMessage;
+    // mainSection.insertAdjacentElement('afterbegin', errorBlock);
+
+  };
+
+  window.upload(formDataTest, successHandler, errorHandler);
 });
 
 uploadFile.addEventListener('change', onUploadFileChange);
@@ -219,9 +235,9 @@ for (var i = 0; i < effectPreviewFields.length; i++) {
 sliderPin.addEventListener('mousedown', onMouseDownEffectLevel);
 
 
-// провалидировать форму
+// провалидировать форму+
 // отправить данные посредством XHR
-// закрыть форму
+// закрыть форму+
 // данные в форме (комменты, хештеги, фильтры) сбросить до начального
 // вывести на экран сообщение об успешной загрузки
 //   разметка #success нужно разместить в main
@@ -229,3 +245,5 @@ sliderPin.addEventListener('mousedown', onMouseDownEffectLevel);
 // при ошибки при отправке показать сообщение
 //   разметка #error внутри шаблона template, нужно разместить в main
 //   закрыть сообщение при клике .error__button, Escб по клику на произвольную область экрана.
+
+// пройти по коллеекции и проверить если value не равен none то удалить selected, и если равено то добавить
