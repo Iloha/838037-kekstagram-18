@@ -15,6 +15,7 @@ var editForm = document.querySelector('.img-upload__form');
 var tagsListInput = editFormPopup.querySelector('input[name="hashtags"]');
 var submitFormButton = editFormPopup.querySelector('.img-upload__submit');
 var effectDepth = editForm.querySelector('.effect-level__depth');
+var commentsField = editForm.querySelector('.text__description');
 var currentFilter;
 var HASHTAG_MAX_LENGTH = 20;
 var HASHTAGS_MAX_AMOUNT = 5;
@@ -70,16 +71,16 @@ var closeForm = function () {
   document.removeEventListener('keydown', onPressEscClose);
 };
 
-var submitForm = function () {
-  var message = getErrorMessage();
+// var submitForm = function () {
+//   var message = getErrorMessage();
 
-  if (message) {
-    tagsListInput.setCustomValidity(message);
-    return;
-  }
+//   if (message) {
+//     tagsListInput.setCustomValidity(message);
+//     return;
+//   }
 
-  editForm.submit();
-};
+//   editForm.submit();
+// };
 
 var setFilter = function (id) {
   image.className = 'effects__preview--' + id;
@@ -134,8 +135,6 @@ var onCloseForm = function () {
   closeForm();
 };
 
-var commentsField = editForm.querySelector('.text__description');
-
 var ableToEsc = function (evt) {
   if (evt.target === tagsListInput || evt.target === commentsField) {
     return false;
@@ -178,9 +177,9 @@ var onMouseDownEffectLevel = function (evt) {
   document.addEventListener('mouseup', onMouseUpEffectLevel);
 };
 
-// var onEnterPressSubmitForm = function () {
-//   submitForm();
-// };
+var onEnterPressSubmitForm = function () {
+  submitForm();
+};
 
 var onChangeEffect = function (evt) {
   var id = evt.target.value;
@@ -189,13 +188,20 @@ var onChangeEffect = function (evt) {
 };
 
 var resetForm = function () {
+  commentsField.textContent = '11';
 
 };
 
 editForm.addEventListener('submit', function (evt) {
+  console.log('validation')
+  var message = getErrorMessage();
+
+  if (message) {
+    tagsListInput.setCustomValidity(message);
+    return;
+  }
 
   var formDataTest = new FormData(editForm);
-  console.log('form', editForm, formDataTest);
 
   window.upload(formDataTest, function (response) {
     editFormPopup.classList.add('hidden');
@@ -211,3 +217,15 @@ for (var i = 0; i < effectPreviewFields.length; i++) {
 }
 // submitFormButton.addEventListener('click', onEnterPressSubmitForm);
 sliderPin.addEventListener('mousedown', onMouseDownEffectLevel);
+
+
+// провалидировать форму
+// отправить данные посредством XHR
+// закрыть форму
+// данные в форме (комменты, хештеги, фильтры) сбросить до начального
+// вывести на экран сообщение об успешной загрузки
+//   разметка #success нужно разместить в main
+//   закрыть сообщение при нажатии на .success__button, ecs, клику на произвольную область экрана
+// при ошибки при отправке показать сообщение
+//   разметка #error внутри шаблона template, нужно разместить в main
+//   закрыть сообщение при клике .error__button, Escб по клику на произвольную область экрана.
