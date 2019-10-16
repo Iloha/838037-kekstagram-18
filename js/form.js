@@ -25,8 +25,6 @@ var errorTemplate = document.querySelector('#error')
 var successTemplate = document.querySelector('#success')
   .content
   .querySelector('.success');
-// var successButton = document.querySelector('.success__button');
-
 
 var currentFilter;
 var HASHTAG_MAX_LENGTH = 20;
@@ -189,9 +187,9 @@ var onMouseDownEffectLevel = function (evt) {
   document.addEventListener('mouseup', onMouseUpEffectLevel);
 };
 
-var onEnterPressSubmitForm = function () {
-  submitForm();
-};
+// var onEnterPressSubmitForm = function () {
+//   submitForm();
+// };
 
 var onChangeEffect = function (evt) {
   var id = evt.target.value;
@@ -204,6 +202,7 @@ var resetForm = function () {
   tagsListInput.value = '';
   setFilter('none');
   setEffectLevel(true);
+  setEffectLevel.currentFilter = 'none';
 };
 
 editForm.addEventListener('submit', function (evt) {
@@ -216,7 +215,6 @@ editForm.addEventListener('submit', function (evt) {
   }
 
   var formDataTest = new FormData(editForm);
-
 
   var errorHandler = function (errorMessage) {
     var errorBlock = errorTemplate.cloneNode(true);
@@ -255,7 +253,7 @@ editForm.addEventListener('submit', function (evt) {
   };
 
 
-  var successHandler = function (response) {
+  var successHandler = function () {
     var successBlock = successTemplate.cloneNode(true);
 
     editFormPopup.classList.add('hidden');
@@ -302,17 +300,5 @@ for (var i = 0; i < effectPreviewFields.length; i++) {
 }
 // submitFormButton.addEventListener('click', onEnterPressSubmitForm);
 sliderPin.addEventListener('mousedown', onMouseDownEffectLevel);
-
-
-// провалидировать форму+
-// отправить данные посредством XHR +
-// закрыть форму+
-// данные в форме (комменты, хештеги, фильтры) сбросить до начального +-
-// вывести на экран сообщение об успешной загрузки +
-//   разметка #success нужно разместить в main +
-//   закрыть сообщение при нажатии на .success__button, ecs, клику на произвольную область экрана
-// при ошибки при отправке показать сообщение +
-//   разметка #error внутри шаблона template, нужно разместить в main +
-//   закрыть сообщение при клике .error__button, Escб по клику на произвольную область экрана.
 
 // пройти по коллеекции и проверить если value не равен none то удалить selected, и если равено то добавить
