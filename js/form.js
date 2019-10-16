@@ -81,17 +81,6 @@ var closeForm = function () {
   document.removeEventListener('keydown', onPressEscClose);
 };
 
-// var submitForm = function () {
-//   var message = getErrorMessage();
-
-//   if (message) {
-//     tagsListInput.setCustomValidity(message);
-//     return;
-//   }
-
-//   editForm.submit();
-// };
-
 var setFilter = function (id) {
   image.className = 'effects__preview--' + id;
   currentFilter = id;
@@ -186,10 +175,6 @@ var onMouseDownEffectLevel = function (evt) {
   document.addEventListener('mousemove', onMouseMoveEffectLevel);
   document.addEventListener('mouseup', onMouseUpEffectLevel);
 };
-
-// var onEnterPressSubmitForm = function () {
-//   submitForm();
-// };
 
 var onChangeEffect = function (evt) {
   var id = evt.target.value;
