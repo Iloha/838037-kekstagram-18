@@ -1,6 +1,4 @@
 'use strict';
-
-
 var uploadFile = document.querySelector('#upload-file');
 var editFormPopup = document.querySelector('.img-upload__overlay');
 var closeEditFormPopup = editFormPopup.querySelector('#upload-cancel');
@@ -13,7 +11,6 @@ var effectPreviewFields = editFormPopup.querySelectorAll('input[name="effect"]')
 
 var editForm = document.querySelector('.img-upload__form');
 var tagsListInput = editFormPopup.querySelector('input[name="hashtags"]');
-var submitFormButton = editFormPopup.querySelector('.img-upload__submit');
 var effectDepth = editForm.querySelector('.effect-level__depth');
 var commentsField = editForm.querySelector('.text__description');
 
@@ -46,7 +43,7 @@ var getErrorMessage = function () {
   }
   for (var i = 0; i < tagListData.length; i++) {
     var tag = tagListData[i].toLowerCase();
-    if (tag.charAt(0) !== '#' ) {
+    if (tag.charAt(0) !== '#') {
       return 'Хеш-тег должен начинаться с #';
     }
     if (tag.slice(1).includes('#')) {
@@ -187,10 +184,10 @@ var resetForm = function () {
   tagsListInput.value = '';
   setFilter('none');
   setEffectLevel(true);
-  setEffectLevel.currentFilter = 'none';
+  effectPreviewFields[0].checked = true;
 };
 
-editForm.addEventListener('submit', function (evt) {
+var onSubmit = function (evt) {
   evt.preventDefault();
   var message = getErrorMessage();
 
@@ -237,7 +234,6 @@ editForm.addEventListener('submit', function (evt) {
     document.addEventListener('click', onCloseAnyClickErrorBlock);
   };
 
-
   var successHandler = function () {
     var successBlock = successTemplate.cloneNode(true);
 
@@ -276,14 +272,12 @@ editForm.addEventListener('submit', function (evt) {
   };
 
   window.upload(formDataTest, successHandler, errorHandler);
-});
+};
 
+editForm.addEventListener('submit', onSubmit);
 uploadFile.addEventListener('change', onUploadFileChange);
 
 for (var i = 0; i < effectPreviewFields.length; i++) {
   effectPreviewFields[i].addEventListener('change', onChangeEffect);
 }
-// submitFormButton.addEventListener('click', onEnterPressSubmitForm);
 sliderPin.addEventListener('mousedown', onMouseDownEffectLevel);
-
-// пройти по коллеекции и проверить если value не равен none то удалить selected, и если равено то добавить
