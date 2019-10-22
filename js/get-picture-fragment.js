@@ -56,5 +56,4 @@
   };
 
   window.load(successHandler, errorHandler);
-
 })();

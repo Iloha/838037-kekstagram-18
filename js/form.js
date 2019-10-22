@@ -1,6 +1,4 @@
 'use strict';
-
-
 var uploadFile = document.querySelector('#upload-file');
 var editFormPopup = document.querySelector('.img-upload__overlay');
 var closeEditFormPopup = editFormPopup.querySelector('#upload-cancel');
@@ -13,8 +11,18 @@ var effectPreviewFields = editFormPopup.querySelectorAll('input[name="effect"]')
 
 var editForm = document.querySelector('.img-upload__form');
 var tagsListInput = editFormPopup.querySelector('input[name="hashtags"]');
-var submitFormButton = editFormPopup.querySelector('.img-upload__submit');
 var effectDepth = editForm.querySelector('.effect-level__depth');
+var commentsField = editForm.querySelector('.text__description');
+
+var mainSection = document.querySelector('main');
+var errorTemplate = document.querySelector('#error')
+  .content
+  .querySelector('.error');
+
+var successTemplate = document.querySelector('#success')
+  .content
+  .querySelector('.success');
+
 var currentFilter;
 var HASHTAG_MAX_LENGTH = 20;
 var HASHTAGS_MAX_AMOUNT = 5;
@@ -35,7 +43,7 @@ var getErrorMessage = function () {
   }
   for (var i = 0; i < tagListData.length; i++) {
     var tag = tagListData[i].toLowerCase();
-    if (tag.charAt(0) !== '#' ) {
+    if (tag.charAt(0) !== '#') {
       return 'Хеш-тег должен начинаться с #';
     }
     if (tag.slice(1).includes('#')) {
@@ -68,17 +76,6 @@ var closeForm = function () {
   uploadFile.value = '';
   document.removeEventListener('click', onCloseForm);
   document.removeEventListener('keydown', onPressEscClose);
-};
-
-var submitForm = function () {
-  var message = getErrorMessage();
-
-  if (message) {
-    tagsListInput.setCustomValidity(message);
-    return;
-  }
-
-  editForm.submit();
 };
 
 var setFilter = function (id) {
@@ -134,8 +131,6 @@ var onCloseForm = function () {
   closeForm();
 };
 
-var commentsField = editForm.querySelector('.text__description');
-
 var ableToEsc = function (evt) {
   if (evt.target === tagsListInput || evt.target === commentsField) {
     return false;
@@ -178,27 +173,111 @@ var onMouseDownEffectLevel = function (evt) {
   document.addEventListener('mouseup', onMouseUpEffectLevel);
 };
 
-var onEnterPressSubmitForm = function () {
-  submitForm();
-};
-
 var onChangeEffect = function (evt) {
   var id = evt.target.value;
   setFilter(id);
   setEffectLevel(true);
 };
 
-editForm.addEventListener('submit', function (evt) {
-  window.upload(new FormData(editForm), function (response) {
-    editFormPopup.classList.add('hidden');
-  });
-  evt.preventDefault();
-});
+var resetForm = function () {
+  commentsField.value = '';
+  tagsListInput.value = '';
+  setFilter('none');
+  setEffectLevel(true);
+  effectPreviewFields[0].checked = true;
+};
 
+var onSubmit = function (evt) {
+  evt.preventDefault();
+  var message = getErrorMessage();
+
+  if (message) {
+    tagsListInput.setCustomValidity(message);
+    return;
+  }
+
+  var formDataTest = new FormData(editForm);
+
+  var errorHandler = function (errorMessage) {
+    var errorBlock = errorTemplate.cloneNode(true);
+    editFormPopup.classList.add('hidden');
+    errorBlock.querySelector('.error__title').textContent = errorMessage;
+    mainSection.insertAdjacentElement('afterbegin', errorBlock);
+
+    var closeErrorBlock = function () {
+      errorBlock.style.display = 'none';
+      errorButton.removeEventListener('click', onCloseErrorBlock);
+      document.removeEventListener('keydown', onEscCloseErrorBlock);
+      document.removeEventListener('click', onCloseAnyClickErrorBlock);
+    };
+
+    var errorButton = document.querySelector('.error__button');
+
+    var onCloseErrorBlock = function () {
+      closeErrorBlock();
+    };
+
+    var onEscCloseErrorBlock = function (evtT) {
+      if (evtT.keyCode === window.data.ESC_CODE) {
+        closeErrorBlock();
+      }
+    };
+
+    var onCloseAnyClickErrorBlock = function (evtT) {
+      if (evtT.target === errorBlock) {
+        closeErrorBlock();
+      }
+    };
+
+    errorButton.addEventListener('click', onCloseErrorBlock);
+    document.addEventListener('keydown', onEscCloseErrorBlock);
+    document.addEventListener('click', onCloseAnyClickErrorBlock);
+  };
+
+  var successHandler = function () {
+    var successBlock = successTemplate.cloneNode(true);
+
+    editFormPopup.classList.add('hidden');
+    resetForm();
+    mainSection.insertAdjacentElement('afterbegin', successBlock);
+
+    var closeSuccessBlock = function () {
+      successBlock.style.display = 'none';
+      successButton.removeEventListener('click', onCloseSuccessBlock);
+      document.removeEventListener('keydown', onEscCloseSuccessBlock);
+      document.removeEventListener('click', onCloseAnyClickSuccessBlock);
+    };
+
+    var successButton = document.querySelector('.success__button');
+
+    var onCloseSuccessBlock = function () {
+      closeSuccessBlock();
+    };
+
+    var onEscCloseSuccessBlock = function (evtT) {
+      if (evtT.keyCode === window.data.ESC_CODE) {
+        closeSuccessBlock();
+      }
+    };
+
+    var onCloseAnyClickSuccessBlock = function (evtT) {
+      if (evtT.target === successBlock) {
+        closeSuccessBlock();
+      }
+    };
+
+    successButton.addEventListener('click', onCloseSuccessBlock);
+    document.addEventListener('keydown', onEscCloseSuccessBlock);
+    document.addEventListener('click', onCloseAnyClickSuccessBlock);
+  };
+
+  window.upload(formDataTest, successHandler, errorHandler);
+};
+
+editForm.addEventListener('submit', onSubmit);
 uploadFile.addEventListener('change', onUploadFileChange);
 
 for (var i = 0; i < effectPreviewFields.length; i++) {
   effectPreviewFields[i].addEventListener('change', onChangeEffect);
 }
-submitFormButton.addEventListener('click', onEnterPressSubmitForm);
 sliderPin.addEventListener('mousedown', onMouseDownEffectLevel);
