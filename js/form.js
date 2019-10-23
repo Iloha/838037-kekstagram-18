@@ -9,10 +9,12 @@ var sliderWrap = editFormPopup.querySelector('.img-upload__effect-level');
 var image = editFormPopup.querySelector('.img-upload__preview img');
 var effectPreviewFields = editFormPopup.querySelectorAll('input[name="effect"]');
 
+
 var editForm = document.querySelector('.img-upload__form');
 var tagsListInput = editFormPopup.querySelector('input[name="hashtags"]');
 var effectDepth = editForm.querySelector('.effect-level__depth');
 var commentsField = editForm.querySelector('.text__description');
+var effectLevelField = editForm.querySelector('.effect-level__value');
 
 var mainSection = document.querySelector('main');
 var errorTemplate = document.querySelector('#error')
@@ -124,7 +126,11 @@ var setEffectLevel = function (max) {
   var setEffectDepth = function () {
     effectDepth.style.width = (p * 100) + '%';
   };
+  var setEffectValue = function () {
+    effectLevelField.setAttribute('value', p * 100);
+  };
   setEffectDepth();
+  setEffectValue();
   if (max) {
     setPinPosition(COORDINATES.MAX);
   }
@@ -196,10 +202,7 @@ var resetForm = function () {
 
 var onSubmit = function (evt) {
   evt.preventDefault();
-  var message = getErrorMessage();
-
-  if (message) {
-    tagsListInput.setCustomValidity(message);
+  if (!evt.target.checkValidity()) {
     return;
   }
 
@@ -282,6 +285,10 @@ var onSubmit = function (evt) {
 };
 
 editForm.addEventListener('submit', onSubmit);
+tagsListInput.addEventListener('change', function () {
+  var message = getErrorMessage();
+  tagsListInput.setCustomValidity(message);
+});
 uploadFile.addEventListener('change', onUploadFileChange);
 
 for (var i = 0; i < effectPreviewFields.length; i++) {
