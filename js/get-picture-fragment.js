@@ -47,8 +47,10 @@
     var images = document.querySelectorAll('.picture');
     images.forEach(function (element) {
       element.remove();
-    })
+    });
   };
+
+  var lastTimeout;
 
   var createImagesList = function (imagesArray) {
     clearImagesList();
@@ -79,6 +81,13 @@
     popularFilter.classList.add('img-filters__button--active');
     randomFilter.classList.remove('img-filters__button--active');
     discussedFilter.classList.remove('img-filters__button--active');
+
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(function () {
+      createImagesList(imagesData);
+    }, 500);
     document.removeEventListener('click', onPopularFilter);
   };
 
@@ -86,6 +95,19 @@
     discussedFilter.classList.add('img-filters__button--active');
     popularFilter.classList.remove('img-filters__button--active');
     randomFilter.classList.remove('img-filters__button--active');
+
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(function () {
+      var discussedArray = [];
+      discussedArray = imagesData.slice();
+      discussedArray.sort(function (a, b) {
+        return b.likes - a.likes;
+      });
+      createImagesList(discussedArray);
+    }, 500);
+
     document.removeEventListener('click', onDiscussedFilter);
   };
 
@@ -94,19 +116,25 @@
     discussedFilter.classList.remove('img-filters__button--active');
     randomFilter.classList.add('img-filters__button--active');
 
-    var randomArray = [];
-    var getRandomFromArray = function (array) {
-      return array[Math.floor(Math.random() * array.length)];
-    };
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(function () {
+      var randomArray = [];
+      var getRandomFromArray = function (array) {
+        return array[Math.floor(Math.random() * array.length)];
+      };
 
-    do {
-      var newImage = getRandomFromArray(imagesData);
-      if (!randomArray.includes(newImage)) {
-        randomArray.push(newImage);
-      }
-    } while (randomArray.length < 10);
+      do {
+        var newImage = getRandomFromArray(imagesData);
+        if (!randomArray.includes(newImage)) {
+          randomArray.push(newImage);
+        }
+      } while (randomArray.length < 10);
 
-    createImagesList(randomArray);
+      createImagesList(randomArray);
+    }, 500);
+
     // randomFilter.removeEventListener('click', onRandomFilter);
     document.removeEventListener('click', onRandomFilter);
   };
