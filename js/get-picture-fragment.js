@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var FILTER_TIMEOUT = 500;
   var mainSection = document.querySelector('main');
   var imageFilters = document.querySelector('.img-filters');
   var popularFilter = imageFilters.querySelector('#filter-popular');
@@ -51,8 +50,6 @@
     });
   };
 
-  var lastTimeout;
-
   var createImagesList = function (imagesArray) {
     clearImagesList();
     var imagesList = document.querySelector('.pictures');
@@ -89,8 +86,8 @@
 
   var getRandomArray = function (array) {
     var randomArray = [];
-    var getRandomFromArray = function (array) {
-      return array[Math.floor(Math.random() * array.length)];
+    var getRandomFromArray = function (source) {
+      return source[Math.floor(Math.random() * source.length)];
     };
 
     do {
@@ -102,37 +99,30 @@
     return randomArray;
   };
 
-  var debounce = function (someArray) {
-    if (lastTimeout) {
-      window.clearTimeout(lastTimeout);
-    }
-    lastTimeout = window.setTimeout(function () {
-      createImagesList(someArray);
-    }, FILTER_TIMEOUT);
-  };
-
   var onPopularFilterClick = function () {
     popularFilter.classList.add('img-filters__button--active');
     randomFilter.classList.remove('img-filters__button--active');
     discussedFilter.classList.remove('img-filters__button--active');
 
-    debounce(imagesData);
+    window.debounce(createImagesList(imagesData));
   };
 
   var onDiscussedFilterClick = function () {
     discussedFilter.classList.add('img-filters__button--active');
     popularFilter.classList.remove('img-filters__button--active');
     randomFilter.classList.remove('img-filters__button--active');
-
-    debounce(getSortedByLikesArray(imagesData));
+    var data = getSortedByLikesArray(imagesData);
+;
+    window.debounce(createImagesList(data));
   };
 
   var onRandomFilterClick = function () {
     popularFilter.classList.remove('img-filters__button--active');
     discussedFilter.classList.remove('img-filters__button--active');
     randomFilter.classList.add('img-filters__button--active');
+    var data = getRandomArray(imagesData);
 
-    debounce(getRandomArray(imagesData));
+    window.debounce(createImagesList(data));
   };
 
   randomFilter.addEventListener('click', onRandomFilterClick);
