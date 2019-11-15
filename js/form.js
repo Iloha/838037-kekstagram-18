@@ -9,10 +9,12 @@ var sliderWrap = editFormPopup.querySelector('.img-upload__effect-level');
 var image = editFormPopup.querySelector('.img-upload__preview img');
 var effectPreviewFields = editFormPopup.querySelectorAll('input[name="effect"]');
 
+
 var editForm = document.querySelector('.img-upload__form');
 var tagsListInput = editFormPopup.querySelector('input[name="hashtags"]');
 var effectDepth = editForm.querySelector('.effect-level__depth');
 var commentsField = editForm.querySelector('.text__description');
+var effectLevelField = editForm.querySelector('.effect-level__value');
 
 var mainSection = document.querySelector('main');
 var errorTemplate = document.querySelector('#error')
@@ -34,34 +36,41 @@ var COORDINATES = {
 var getErrorMessage = function () {
   var tagListData = tagsListInput.value.split(' ');
   var uniqueHashtagsList = [];
-
+  var message = '';
   if (tagsListInput.value === '') {
-    return '';
+    return message;
   }
   if (tagListData.length > HASHTAGS_MAX_AMOUNT) {
-    return 'Нельзя указать больше пяти хэш-тегов';
+    message = 'Нельзя указать больше пяти хэш-тегов';
+    return message;
   }
   for (var i = 0; i < tagListData.length; i++) {
     var tag = tagListData[i].toLowerCase();
     if (tag.charAt(0) !== '#') {
-      return 'Хеш-тег должен начинаться с #';
+      message = 'Хеш-тег должен начинаться с #';
+      return message;
     }
     if (tag.slice(1).includes('#')) {
-      return 'Хэш-теги должны разделяться пробелами';
+      message = 'Хэш-теги должны разделяться пробелами';
+      return message;
     }
     if (tag.length === 1) {
-      return 'Хеш-тег не может состоять только из #';
+      message = 'Хеш-тег не может состоять только из #';
+      return message;
     }
     if (tag.length > HASHTAG_MAX_LENGTH) {
-      return 'Максимальная длина хэш-тега должна быть 20 символов';
+      message = 'Максимальная длина хэш-тега должна быть 20 символов';
+      return message;
     }
     if (!uniqueHashtagsList.includes(tag)) {
       uniqueHashtagsList.push(tag);
     }
   }
   if (uniqueHashtagsList.length !== tagListData.length) {
-    return 'Один и тот же хэш-тег не может быть использован дважды';
+    message = 'Один и тот же хэш-тег не может быть использован дважды';
+    return message;
   }
+  return message;
 };
 
 var showEditFormPopup = function () {
@@ -117,7 +126,11 @@ var setEffectLevel = function (max) {
   var setEffectDepth = function () {
     effectDepth.style.width = (p * 100) + '%';
   };
+  var setEffectValue = function () {
+    effectLevelField.setAttribute('value', p * 100);
+  };
   setEffectDepth();
+  setEffectValue();
   if (max) {
     setPinPosition(COORDINATES.MAX);
   }
@@ -189,10 +202,7 @@ var resetForm = function () {
 
 var onSubmit = function (evt) {
   evt.preventDefault();
-  var message = getErrorMessage();
-
-  if (message) {
-    tagsListInput.setCustomValidity(message);
+  if (!evt.target.checkValidity()) {
     return;
   }
 
@@ -275,6 +285,10 @@ var onSubmit = function (evt) {
 };
 
 editForm.addEventListener('submit', onSubmit);
+tagsListInput.addEventListener('change', function () {
+  var message = getErrorMessage();
+  tagsListInput.setCustomValidity(message);
+});
 uploadFile.addEventListener('change', onUploadFileChange);
 
 for (var i = 0; i < effectPreviewFields.length; i++) {
