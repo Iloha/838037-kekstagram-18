@@ -52,9 +52,9 @@
 
   var createImagesList = function (imagesArray) {
     clearImagesList();
+
     var imagesList = document.querySelector('.pictures');
     var fragment = document.createDocumentFragment();
-
 
     for (var i = 0; i < imagesArray.length; i++) {
       fragment.appendChild(renderImage(imagesArray[i]));
@@ -77,10 +77,12 @@
 
   var getSortedByLikesArray = function (array) {
     var sortedByLikesArray = [];
+
     sortedByLikesArray = array.slice();
     sortedByLikesArray.sort(function (a, b) {
       return b.likes - a.likes;
     });
+
     return sortedByLikesArray;
   };
 
@@ -96,6 +98,7 @@
         randomArray.push(newImage);
       }
     } while (randomArray.length < 10);
+
     return randomArray;
   };
 
@@ -111,6 +114,7 @@
     discussedFilter.classList.add('img-filters__button--active');
     popularFilter.classList.remove('img-filters__button--active');
     randomFilter.classList.remove('img-filters__button--active');
+
     var data = getSortedByLikesArray(imagesData);
 
     window.debounce(createImagesList(data));
@@ -120,6 +124,7 @@
     popularFilter.classList.remove('img-filters__button--active');
     discussedFilter.classList.remove('img-filters__button--active');
     randomFilter.classList.add('img-filters__button--active');
+
     var data = getRandomArray(imagesData);
 
     window.debounce(createImagesList(data));

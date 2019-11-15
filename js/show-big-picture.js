@@ -77,5 +77,4 @@
   bigPictureCancel.addEventListener('click', onCloseBigPicture);
   document.addEventListener('keydown', onPressEscBigPicture);
   commentsLoader.addEventListener('click', onClickShowComments);
-
 })();

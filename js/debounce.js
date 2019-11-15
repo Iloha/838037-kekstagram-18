@@ -8,6 +8,7 @@
 
     return function () {
       var parameters = arguments;
+
       if (lastTimeout) {
         window.clearTimeout(lastTimeout);
       }

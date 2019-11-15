@@ -5,6 +5,7 @@
 
   window.load = function (onSuccess, onError) {
     var xhr = window.getXhr(onSuccess, onError);
+
     xhr.open('GET', URL);
     xhr.send();
   };

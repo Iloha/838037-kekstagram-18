@@ -6,6 +6,7 @@
 
   window.getXhr = function (onSuccess, onError) {
     var xhr = new XMLHttpRequest();
+
     xhr.timeout = TIMEOUT;
     xhr.responseType = 'json';
 
@@ -22,6 +23,7 @@
         onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
       });
     });
+
     return xhr;
   };
 })();
