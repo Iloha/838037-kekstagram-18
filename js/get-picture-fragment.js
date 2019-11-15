@@ -112,7 +112,7 @@
     popularFilter.classList.remove('img-filters__button--active');
     randomFilter.classList.remove('img-filters__button--active');
     var data = getSortedByLikesArray(imagesData);
-;
+
     window.debounce(createImagesList(data));
   };
 

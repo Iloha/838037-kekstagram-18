@@ -4,7 +4,6 @@
   var bigPicture = document.querySelector('.big-picture');
   var bigPictureImg = bigPicture.querySelector('.big-picture__img img');
   var likesCount = bigPicture.querySelector('.likes-count');
-  var commentsCount = bigPicture.querySelector('.comments-count');
   var socialCaption = bigPicture.querySelector('.social__caption');
   var commentsWrapper = bigPicture.querySelector('.social__comments');
   var commentsCountWrapper = bigPicture.querySelector('.social__comment-count');
@@ -25,7 +24,6 @@
     bigPictureImg.src = picture.url;
     likesCount.textContent = picture.likes;
     showNextComments();
-    // commentsCount.textContent = picture.comments.length;
     socialCaption.textContent = picture.description;
     renderCommentsTemplate(picture.comments);
   };
@@ -56,10 +54,6 @@
     renderCommentsTemplate(currentPicture.comments);
     commentsCountWrapper.innerHTML = showenCommentsAmount + ' из <span class="comments-count">' + currentPicture.comments.length + '</span> комментариев';
   };
-  // var hideComments = function () {
-  //   commentsCountWrapper.classList.add('visually-hidden');
-  //
-  // };
 
   var closeBigPicture = function () {
     bigPicture.classList.add('hidden');
@@ -76,19 +70,12 @@
     }
   };
 
-
-
   var onClickShowComments = function () {
     showNextComments();
   };
-  // hideComments();
+
   bigPictureCancel.addEventListener('click', onCloseBigPicture);
   document.addEventListener('keydown', onPressEscBigPicture);
   commentsLoader.addEventListener('click', onClickShowComments);
 
 })();
-
-// 1. Показывать 5 комментов
-// 2. При нажатии на кнопку показывать следующие 5
-// 3. При нажатии на кнопку повесить хэндлер с вызовом фунции showNext5
-// 4. showNext5 функция, которая идет по массиву и показывает следующие 5

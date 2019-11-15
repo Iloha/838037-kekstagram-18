@@ -3,6 +3,7 @@
 (function () {
   var TIMEOUT = 4000;
   var SUCCESS_RESPONSE = 200;
+
   window.getXhr = function (onSuccess, onError) {
     var xhr = new XMLHttpRequest();
     xhr.timeout = TIMEOUT;
