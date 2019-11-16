@@ -98,7 +98,7 @@
       shuffledArray[i] = temp;
     }
 
-    return shuffledArray;
+    return shuffledArray.slice(0, 10);
   };
 
   var onPopularFilterClick = function () {
