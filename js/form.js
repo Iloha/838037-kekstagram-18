@@ -3,7 +3,7 @@
 (function () {
   var HASHTAG_MAX_LENGTH = 20;
   var HASHTAGS_MAX_AMOUNT = 5;
-  var COORDINATES = {
+  var Coordinates = {
     MIN: 0,
     MAX: 453
   };
@@ -141,7 +141,7 @@
     setEffectDepth();
     setEffectValue();
     if (max) {
-      setPinPosition(COORDINATES.MAX);
+      setPinPosition(Coordinates.MAX);
     }
   };
 
