@@ -76,7 +76,6 @@
     showNextComments();
   };
 
-  // TODO: wrap to init function and call from showBigpicture
   bigPictureCancel.addEventListener('click', onCloseBigPicture);
   document.addEventListener('keydown', onPressEscBigPicture);
   commentsLoader.addEventListener('click', onClickShowComments);
