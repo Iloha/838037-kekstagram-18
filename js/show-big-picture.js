@@ -10,11 +10,11 @@
   var commentsLoader = bigPicture.querySelector('.comments-loader');
   var addCommentField = bigPicture.querySelector('.social__footer-text');
   var bigPictureCancel = bigPicture.querySelector('.big-picture__cancel');
-  var showenCommentsAmount;
+  var shownCommentsAmount;
   var currentPicture;
 
   window.showBigPicture = function (picture) {
-    showenCommentsAmount = 0;
+    shownCommentsAmount = 0;
     bigPicture.classList.remove('hidden');
     currentPicture = picture;
     fillBigPicture(currentPicture);
@@ -28,10 +28,10 @@
     renderCommentsTemplate(picture.comments);
   };
 
-  var renderCommentsTemplate = function (commentsList) {
+  var renderCommentsTemplate = function (comments) {
     var template = '';
-    for (var i = 0; i < showenCommentsAmount; i++) {
-      template += '<li class="social__comment"><img class="social__picture" src="' + commentsList[i].avatar + '" alt="' + commentsList[i].name + '" width="35" height="35"><p class="social__text">' + commentsList[i].message + '</p></li>';
+    for (var i = 0; i < shownCommentsAmount; i++) {
+      template += '<li class="social__comment"><img class="social__picture" src="' + comments[i].avatar + '" alt="' + comments[i].name + '" width="35" height="35"><p class="social__text">' + comments[i].message + '</p></li>';
     }
     commentsWrapper.innerHTML = template;
   };
@@ -46,18 +46,20 @@
 
   var showNextComments = function () {
     showLoadMoreComments();
-    showenCommentsAmount += window.data.COMMENTS_NUMBER;
-    if (showenCommentsAmount >= currentPicture.comments.length) {
-      showenCommentsAmount = currentPicture.comments.length;
+    shownCommentsAmount += window.data.COMMENTS_NUMBER;
+    if (shownCommentsAmount >= currentPicture.comments.length) {
+      shownCommentsAmount = currentPicture.comments.length;
       hideLoadMoreComments();
     }
     renderCommentsTemplate(currentPicture.comments);
-    commentsCountWrapper.innerHTML = showenCommentsAmount + ' из <span class="comments-count">' + currentPicture.comments.length + '</span> комментариев';
+    commentsCountWrapper.innerHTML = shownCommentsAmount + ' из <span class="comments-count">' + currentPicture.comments.length + '</span> комментариев';
   };
 
   var closeBigPicture = function () {
     bigPicture.classList.add('hidden');
     document.removeEventListener('click', onCloseBigPicture);
+    document.removeEventListener('click', onPressEscBigPicture);
+    document.removeEventListener('click', onClickShowComments);
   };
 
   var onCloseBigPicture = function () {
@@ -74,6 +76,7 @@
     showNextComments();
   };
 
+  // TODO: wrap to init function and call from showBigpicture
   bigPictureCancel.addEventListener('click', onCloseBigPicture);
   document.addEventListener('keydown', onPressEscBigPicture);
   commentsLoader.addEventListener('click', onClickShowComments);

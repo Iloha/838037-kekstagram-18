@@ -9,7 +9,6 @@ var sliderWrap = editFormPopup.querySelector('.img-upload__effect-level');
 var image = editFormPopup.querySelector('.img-upload__preview img');
 var effectPreviewFields = editFormPopup.querySelectorAll('input[name="effect"]');
 
-
 var editForm = document.querySelector('.img-upload__form');
 var tagsListInput = editFormPopup.querySelector('input[name="hashtags"]');
 var effectDepth = editForm.querySelector('.effect-level__depth');
