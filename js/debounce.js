@@ -7,8 +7,8 @@
     var lastTimeout = null;
 
     return function () {
-      console.log('debounce', cb);
       var parameters = arguments;
+
       if (lastTimeout) {
         window.clearTimeout(lastTimeout);
       }

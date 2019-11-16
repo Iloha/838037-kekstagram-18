@@ -15,6 +15,8 @@
     .content
     .querySelector('.error');
 
+  var imagesData;
+
   var onEnterPressPicture = function (evt, picture) {
     if (evt.keyCode === window.data.ENTER_CODE) {
       window.showBigPicture(picture);
@@ -41,8 +43,6 @@
     return imageElement;
   };
 
-  var imagesData;
-
   var clearImagesList = function () {
     var images = document.querySelectorAll('.picture');
     images.forEach(function (element) {
@@ -52,9 +52,9 @@
 
   var createImagesList = function (imagesArray) {
     clearImagesList();
+
     var imagesList = document.querySelector('.pictures');
     var fragment = document.createDocumentFragment();
-
 
     for (var i = 0; i < imagesArray.length; i++) {
       fragment.appendChild(renderImage(imagesArray[i]));
@@ -62,8 +62,8 @@
     imagesList.appendChild(fragment);
   };
 
-  var successHandler = function (imagesArray) {
-    imagesData = imagesArray;
+  var successHandler = function (images) {
+    imagesData = images;
     createImagesList(imagesData);
     imageFilters.classList.remove('img-filters--inactive');
   };
@@ -75,28 +75,30 @@
     mainSection.insertAdjacentElement('afterbegin', errorBlock);
   };
 
-  var getSortedByLikesArray = function (array) {
+  var getSortedByLikes = function (images) {
     var sortedByLikesArray = [];
-    sortedByLikesArray = array.slice();
+
+    sortedByLikesArray = images.slice();
     sortedByLikesArray.sort(function (a, b) {
       return b.likes - a.likes;
     });
+
     return sortedByLikesArray;
   };
 
-  var getRandomArray = function (array) {
-    var randomArray = [];
-    var getRandomFromArray = function (source) {
-      return source[Math.floor(Math.random() * source.length)];
-    };
+  var getRandom = function (images) {
+    var j;
+    var temp;
+    var shuffledArray = images.slice();
 
-    do {
-      var newImage = getRandomFromArray(array);
-      if (!randomArray.includes(newImage)) {
-        randomArray.push(newImage);
-      }
-    } while (randomArray.length < 10);
-    return randomArray;
+    for (var i = shuffledArray.length - 1; i > 0; i--) {
+      j = Math.floor(Math.random() * (i + 1));
+      temp = shuffledArray[j];
+      shuffledArray[j] = shuffledArray[i];
+      shuffledArray[i] = temp;
+    }
+
+    return shuffledArray;
   };
 
   var onPopularFilterClick = function () {
@@ -111,8 +113,9 @@
     discussedFilter.classList.add('img-filters__button--active');
     popularFilter.classList.remove('img-filters__button--active');
     randomFilter.classList.remove('img-filters__button--active');
-    var data = getSortedByLikesArray(imagesData);
-;
+
+    var data = getSortedByLikes(imagesData);
+
     window.debounce(createImagesList(data));
   };
 
@@ -120,7 +123,8 @@
     popularFilter.classList.remove('img-filters__button--active');
     discussedFilter.classList.remove('img-filters__button--active');
     randomFilter.classList.add('img-filters__button--active');
-    var data = getRandomArray(imagesData);
+
+    var data = getRandom(imagesData);
 
     window.debounce(createImagesList(data));
   };

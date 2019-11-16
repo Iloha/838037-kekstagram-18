@@ -9,7 +9,6 @@ var sliderWrap = editFormPopup.querySelector('.img-upload__effect-level');
 var image = editFormPopup.querySelector('.img-upload__preview img');
 var effectPreviewFields = editFormPopup.querySelectorAll('input[name="effect"]');
 
-
 var editForm = document.querySelector('.img-upload__form');
 var tagsListInput = editFormPopup.querySelector('input[name="hashtags"]');
 var effectDepth = editForm.querySelector('.effect-level__depth');
@@ -37,6 +36,7 @@ var getErrorMessage = function () {
   var tagListData = tagsListInput.value.split(' ');
   var uniqueHashtagsList = [];
   var message = '';
+
   if (tagsListInput.value === '') {
     return message;
   }
@@ -70,12 +70,14 @@ var getErrorMessage = function () {
     message = 'Один и тот же хэш-тег не может быть использован дважды';
     return message;
   }
+
   return message;
 };
 
 var showEditFormPopup = function () {
   editFormPopup.classList.remove('hidden');
   sliderWrap.classList.add('hidden');
+
   closeEditFormPopup.addEventListener('click', onCloseForm);
   document.addEventListener('keydown', onPressEscClose);
 };
@@ -83,6 +85,7 @@ var showEditFormPopup = function () {
 var closeForm = function () {
   editFormPopup.classList.add('hidden');
   uploadFile.value = '';
+
   document.removeEventListener('click', onCloseForm);
   document.removeEventListener('keydown', onPressEscClose);
 };
@@ -94,12 +97,13 @@ var setFilter = function (id) {
 
 var setEffectLevel = function (max) {
   var p;
+  var value = '';
+
   if (max) {
     p = 1;
   } else {
     p = sliderPin.offsetLeft / slider.offsetWidth;
   }
-  var value = '';
   sliderWrap.classList.add('hidden');
   if (currentFilter !== 'none') {
     sliderWrap.classList.remove('hidden');
@@ -126,9 +130,11 @@ var setEffectLevel = function (max) {
   var setEffectDepth = function () {
     effectDepth.style.width = (p * 100) + '%';
   };
+
   var setEffectValue = function () {
     effectLevelField.setAttribute('value', p * 100);
   };
+
   setEffectDepth();
   setEffectValue();
   if (max) {
@@ -188,6 +194,7 @@ var onMouseDownEffectLevel = function (evt) {
 
 var onChangeEffect = function (evt) {
   var id = evt.target.value;
+
   setFilter(id);
   setEffectLevel(true);
 };
@@ -210,6 +217,7 @@ var onSubmit = function (evt) {
 
   var errorHandler = function (errorMessage) {
     var errorBlock = errorTemplate.cloneNode(true);
+
     editFormPopup.classList.add('hidden');
     errorBlock.querySelector('.error__title').textContent = errorMessage;
     mainSection.insertAdjacentElement('afterbegin', errorBlock);
