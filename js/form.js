@@ -343,9 +343,9 @@
   });
   uploadFile.addEventListener('change', onUploadFileChange);
 
-  for (var i = 0; i < effectPreviewFields.length; i++) {
-    effectPreviewFields[i].addEventListener('change', onChangeEffect);
-  }
+  effectPreviewFields.forEach(function (element) {
+    element.addEventListener('change', onChangeEffect);
+  });
   sliderPin.addEventListener('mousedown', onMouseDownEffectLevel);
   scaleControlBigger.addEventListener('click', onPlusClick);
   scaleControlSmaller.addEventListener('click', onMinusClick);

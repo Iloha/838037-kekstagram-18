@@ -56,9 +56,9 @@
     var imagesList = document.querySelector('.pictures');
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < imagesArray.length; i++) {
-      fragment.appendChild(renderImage(imagesArray[i]));
-    }
+    imagesArray.forEach(function (element) {
+      fragment.appendChild(renderImage(element));
+    });
     imagesList.appendChild(fragment);
   };
 
