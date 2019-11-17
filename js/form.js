@@ -18,6 +18,10 @@
   var image = editFormPopup.querySelector('.img-upload__preview img');
   var effectPreviewFields = editFormPopup.querySelectorAll('input[name="effect"]');
 
+  var scaleControlSmaller = editFormPopup.querySelector('.scale__control--smaller');
+  var scaleControlBigger = editFormPopup.querySelector('.scale__control--bigger');
+  var scaleValue = editFormPopup.querySelector('.scale__control--value');
+
   var editForm = document.querySelector('.img-upload__form');
   var tagsListInput = editFormPopup.querySelector('input[name="hashtags"]');
   var effectDepth = editForm.querySelector('.effect-level__depth');
@@ -47,28 +51,27 @@
       message = 'Нельзя указать больше пяти хэш-тегов';
       return message;
     }
-    for (var i = 0; i < tagListData.length; i++) {
-      var tag = tagListData[i].toLowerCase();
+
+
+    tagListData.forEach(function (element) {
+      if (message) {
+        return;
+      }
+
+      var tag = element.toLowerCase();
       if (tag.charAt(0) !== '#') {
         message = 'Хеш-тег должен начинаться с #';
-        return message;
-      }
-      if (tag.slice(1).includes('#')) {
+      } else if (tag.slice(1).includes('#')) {
         message = 'Хэш-теги должны разделяться пробелами';
-        return message;
-      }
-      if (tag.length === 1) {
+      } else if (tag.length === 1) {
         message = 'Хеш-тег не может состоять только из #';
-        return message;
-      }
-      if (tag.length > HASHTAG_MAX_LENGTH) {
+      } else if (tag.length > HASHTAG_MAX_LENGTH) {
         message = 'Максимальная длина хэш-тега должна быть 20 символов';
-        return message;
-      }
-      if (!uniqueHashtagsList.includes(tag)) {
+      } else if (!uniqueHashtagsList.includes(tag)) {
         uniqueHashtagsList.push(tag);
       }
-    }
+    });
+
     if (uniqueHashtagsList.length !== tagListData.length) {
       message = 'Один и тот же хэш-тег не может быть использован дважды';
       return message;
@@ -83,11 +86,13 @@
 
     closeEditFormPopup.addEventListener('click', onCloseForm);
     document.addEventListener('keydown', onPressEscClose);
+    scaleTo(100);
   };
 
   var closeForm = function () {
     editFormPopup.classList.add('hidden');
     uploadFile.value = '';
+    resetForm();
 
     document.removeEventListener('click', onCloseForm);
     document.removeEventListener('keydown', onPressEscClose);
@@ -168,7 +173,7 @@
   };
 
   var setPinPosition = function (newValue) {
-    if ((newValue >= COORDINATES.MIN) && (newValue <= COORDINATES.MAX)) {
+    if ((newValue >= Coordinates.MIN) && (newValue <= Coordinates.MAX)) {
       sliderPin.style.left = newValue + 'px';
     }
   };
@@ -195,6 +200,41 @@
     document.addEventListener('mouseup', onMouseUpEffectLevel);
   };
 
+  var scaleTo = function (value) {
+    scaleValue.value = value + '%';
+    image.style.transform = 'scale(' + value / 100 + ')';
+  };
+
+  var scaleBigger = function () {
+    var value = parseInt(scaleValue.value, 10);
+
+    value += 25;
+    if (value >= 100) {
+      value = 100;
+    }
+
+    scaleTo(value);
+  };
+
+  var scaleSmaller = function () {
+    var value = parseInt(scaleValue.value, 10);
+
+    value -= 25;
+    if (value <= 25) {
+      value = 25;
+    }
+
+    scaleTo(value);
+  };
+
+  var onPlusClick = function () {
+    scaleBigger();
+  };
+
+  var onMinusClick = function () {
+    scaleSmaller();
+  };
+
   var onChangeEffect = function (evt) {
     var id = evt.target.value;
 
@@ -208,6 +248,7 @@
     setFilter('none');
     setEffectLevel(true);
     effectPreviewFields[0].checked = true;
+    scaleTo(100);
   };
 
   var onSubmit = function (evt) {
@@ -306,4 +347,6 @@
     effectPreviewFields[i].addEventListener('change', onChangeEffect);
   }
   sliderPin.addEventListener('mousedown', onMouseDownEffectLevel);
+  scaleControlBigger.addEventListener('click', onPlusClick);
+  scaleControlSmaller.addEventListener('click', onMinusClick);
 })();
