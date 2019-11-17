@@ -29,11 +29,30 @@
   };
 
   var renderCommentsTemplate = function (comments) {
-    var template = '';
-    for (var i = 0; i < shownCommentsAmount; i++) {
-      template += '<li class="social__comment"><img class="social__picture" src="' + comments[i].avatar + '" alt="' + comments[i].name + '" width="35" height="35"><p class="social__text">' + comments[i].message + '</p></li>';
-    }
-    commentsWrapper.innerHTML = template;
+    var visibleComments = comments.slice(0, shownCommentsAmount);
+    var commentsFragment = document.createDocumentFragment();
+
+    visibleComments.forEach(function (comment) {
+      var commentElement = document.createElement('li');
+      commentElement.classList.add('social__comment');
+
+      var pictureElement = document.createElement('img');
+      pictureElement.classList.add('social__picture');
+      pictureElement.setAttribute('src', comment.avatar);
+      pictureElement.setAttribute('alt', comment.name);
+      pictureElement.setAttribute('width', '35');
+      pictureElement.setAttribute('height', '35');
+
+      var textElement = document.createElement('p');
+      textElement.classList.add('social__text');
+      textElement.textContent = comment.message;
+
+      commentElement.appendChild(pictureElement);
+      commentElement.appendChild(textElement);
+      commentsFragment.appendChild(commentElement);
+    });
+    commentsWrapper.innerHTML = '';
+    commentsWrapper.appendChild(commentsFragment);
   };
 
   var hideLoadMoreComments = function () {

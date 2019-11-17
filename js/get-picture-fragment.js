@@ -56,9 +56,9 @@
     var imagesList = document.querySelector('.pictures');
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < imagesArray.length; i++) {
-      fragment.appendChild(renderImage(imagesArray[i]));
-    }
+    imagesArray.forEach(function (element) {
+      fragment.appendChild(renderImage(element));
+    });
     imagesList.appendChild(fragment);
   };
 
@@ -75,15 +75,15 @@
     mainSection.insertAdjacentElement('afterbegin', errorBlock);
   };
 
-  var getSortedByLikes = function (images) {
-    var sortedByLikesArray = [];
+  var getSortedByComments = function (images) {
+    var sortedByCommentsArray = [];
 
-    sortedByLikesArray = images.slice();
-    sortedByLikesArray.sort(function (a, b) {
-      return b.likes - a.likes;
+    sortedByCommentsArray = images.slice();
+    sortedByCommentsArray.sort(function (a, b) {
+      return b.comments.length - a.comments.length;
     });
 
-    return sortedByLikesArray;
+    return sortedByCommentsArray;
   };
 
   var getRandom = function (images) {
@@ -98,7 +98,7 @@
       shuffledArray[i] = temp;
     }
 
-    return shuffledArray;
+    return shuffledArray.slice(0, 10);
   };
 
   var onPopularFilterClick = function () {
@@ -114,7 +114,7 @@
     popularFilter.classList.remove('img-filters__button--active');
     randomFilter.classList.remove('img-filters__button--active');
 
-    var data = getSortedByLikes(imagesData);
+    var data = getSortedByComments(imagesData);
 
     window.debounce(createImagesList(data));
   };
