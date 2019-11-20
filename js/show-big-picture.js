@@ -71,7 +71,17 @@
       hideLoadMoreComments();
     }
     renderCommentsTemplate(currentPicture.comments);
-    commentsCountWrapper.innerHTML = shownCommentsAmount + ' из <span class="comments-count">' + currentPicture.comments.length + '</span> комментариев';
+
+    var startText = document.createTextNode(shownCommentsAmount + ' из ');
+    var totalCount = document.createElement('span');
+    totalCount.classList.add('comments-count');
+    totalCount.textContent = currentPicture.comments.length;
+    var endText = document.createTextNode(' комментариев');
+
+    commentsCountWrapper.innerHTML = '';
+    commentsCountWrapper.appendChild(startText);
+    commentsCountWrapper.appendChild(totalCount);
+    commentsCountWrapper.appendChild(endText);
   };
 
   var closeBigPicture = function () {
